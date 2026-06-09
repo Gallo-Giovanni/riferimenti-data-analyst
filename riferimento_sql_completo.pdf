@@ -1,0 +1,2732 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 3
+/Kids [ 5 0 R 11 0 R 13 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 25578
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 25.84252 547.4331 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 4 Tm /F2 18 Tf 22 TL 280.5774 0 Td (Cheat sheet SQL completo) Tj T* -280.5774 0 Td ET
+Q
+Q
+q
+1 0 0 1 25.84252 534.4331 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Versione finale aggiornata con EXTRACT, che serve a estrarre parti specifiche da date e timestamp come anno, mese e giorno. ) Tj T* ET
+Q
+Q
+q
+1 0 0 1 25.84252 530.1811 cm
+Q
+q
+1 0 0 1 34.01575 29.1811 cm
+q
+.121569 .305882 .470588 rg
+n 0 501 773.8583 -12 re f*
+.960784 .960784 .960784 rg
+n 0 489 773.8583 -19 re f*
+.956863 .8 .8 rg
+n 0 489 53.85827 -19 re f*
+.929412 .956863 .980392 rg
+n 0 470 773.8583 -12 re f*
+.956863 .8 .8 rg
+n 0 470 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 458 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 458 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 446 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 446 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 434 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 434 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 422 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 422 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 410 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 410 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 398 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 398 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 386 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 386 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 374 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 374 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 362 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 362 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 350 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 350 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 338 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 338 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 326 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 326 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 314 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 314 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 302 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 302 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 290 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 290 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 278 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 278 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 266 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 266 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 254 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 254 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 242 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 242 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 230 773.8583 -12 re f*
+.85098 .917647 .968627 rg
+n 0 230 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 218 773.8583 -12 re f*
+.85098 .823529 .913725 rg
+n 0 218 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 206 773.8583 -12 re f*
+.85098 .823529 .913725 rg
+n 0 206 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 194 773.8583 -12 re f*
+.85098 .823529 .913725 rg
+n 0 194 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 182 773.8583 -12 re f*
+.917647 .956863 .886275 rg
+n 0 182 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 170 773.8583 -12 re f*
+.917647 .956863 .886275 rg
+n 0 170 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 158 773.8583 -12 re f*
+.917647 .956863 .886275 rg
+n 0 158 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 146 773.8583 -12 re f*
+.988235 .894118 .839216 rg
+n 0 146 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 134 773.8583 -19 re f*
+.988235 .894118 .839216 rg
+n 0 134 53.85827 -19 re f*
+.960784 .960784 .960784 rg
+n 0 115 773.8583 -19 re f*
+.988235 .894118 .839216 rg
+n 0 115 53.85827 -19 re f*
+.929412 .956863 .980392 rg
+n 0 96 773.8583 -12 re f*
+.988235 .894118 .839216 rg
+n 0 96 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 84 773.8583 -12 re f*
+.988235 .894118 .839216 rg
+n 0 84 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 72 773.8583 -12 re f*
+.988235 .894118 .839216 rg
+n 0 72 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 60 773.8583 -12 re f*
+.988235 .894118 .839216 rg
+n 0 60 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 48 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 48 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 36 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 36 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 24 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 24 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 12 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 12 53.85827 -12 re f*
+1 1 1 rg
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 491.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (Clausola) Tj T* ET
+Q
+Q
+q
+1 0 0 1 56.85827 491.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (Operazione) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 491.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (A cosa serve) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 491.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (Esempio) Tj T* ET
+Q
+Q
+0 0 0 rg
+q
+1 0 0 1 3 479.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CTE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 479.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WITH) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 472.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 8.1 Tm /F1 5.9 Tf 7 TL (Definisce un result set temporaneo con nome, usabile nella) Tj T* (query principale) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 479.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WITH clienti_attivi AS \(SELECT * FROM clienti WHERE et\340 >= 18\)) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 460.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CTE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 460.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WITH multipla) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 460.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Permette di definire pi\371 CTE separate da virgola) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 460.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WITH cte1 AS \(...\), cte2 AS \(...\) SELECT * FROM cte1 JOIN cte2 ON ...;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 448.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 448.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (DISTINCT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 448.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Mostra solo valori unici) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 448.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT DISTINCT citt\340 FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 436.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 436.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (COUNT\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 436.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Conta le righe o i valori non nulli) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 436.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT COUNT\(*\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 424.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 424.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SUM\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 424.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Somma i valori numerici) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 424.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT SUM\(importo\) FROM ordini;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 412.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 412.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (AVG\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 412.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Calcola la media) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 412.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT AVG\(prezzo\) FROM prodotti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 400.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 400.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (MIN\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 400.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Trova il valore minimo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 400.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT MIN\(prezzo\) FROM prodotti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 388.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 388.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (MAX\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 388.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Trova il valore massimo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 388.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT MAX\(prezzo\) FROM prodotti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 376.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 376.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LENGTH\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 376.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Restituisce la lunghezza di una stringa) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 376.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT LENGTH\(nome\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 364.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 364.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LEFT\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 364.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Estrae i primi N caratteri da sinistra) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 364.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT LEFT\(nome, 3\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 352.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 352.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (RIGHT\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 352.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Estrae gli ultimi N caratteri da destra) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 352.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT RIGHT\(telefono, 3\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 340.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 340.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SUBSTRING\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 340.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Estrae una parte della stringa da una posizione data) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 340.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT SUBSTRING\(nome, 1, 3\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 328.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 328.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (POSITION\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 328.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Restituisce la posizione di una sottostringa) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 328.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT POSITION\("@" IN email\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 316.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 316.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (UPPER\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 316.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Trasforma il testo in maiuscolo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 316.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT UPPER\(nome\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 304.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 304.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LOWER\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 304.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Trasforma il testo in minuscolo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 304.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT LOWER\(email\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 292.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 292.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CONCAT\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 292.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Unisce pi\371 stringhe in una sola) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 292.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT CONCAT\(nome, " ", cognome\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 280.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 280.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CONCAT_WS\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 280.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Unisce pi\371 stringhe inserendo un separatore) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 280.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT CONCAT_WS\(" ", nome, cognome\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 268.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 268.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CAST\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 268.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Converte un valore in un altro tipo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 268.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT CAST\(prezzo AS INT\) FROM prodotti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 256.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 256.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (COALESCE\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 256.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Restituisce il primo valore non NULL) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 256.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT COALESCE\(telefono, email, "N/D"\) FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 244.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 244.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (EXTRACT\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 244.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Estrae una parte da una data o timestamp) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 244.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT EXTRACT\(MONTH FROM data_ordine\) FROM ordini;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 232.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 232.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CASE WHEN) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 232.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Applica logica condizionale) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 232.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT CASE WHEN prezzo > 100 THEN "Alto" ELSE "Basso" END FROM prodotti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 220.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 220.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (AS) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 220.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Rinomina una colonna nel risultato) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 220.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT nome AS nome_cliente FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 208.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WINDOW) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 208.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ROW_NUMBER\(\) OVER\(...\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 208.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Numera le righe in sequenza dentro una finestra) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 208.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ROW_NUMBER\(\) OVER \(ORDER BY importo DESC\) AS rn) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 196.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WINDOW) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 196.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (PARTITION BY) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 196.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Divide il risultato in partizioni per calcoli indipendenti) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 196.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ROW_NUMBER\(\) OVER \(PARTITION BY cliente_id ORDER BY importo DESC\) AS rn) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 184.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WINDOW) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 184.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ORDER BY in OVER\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 184.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Definisce l'ordine interno della finestra) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 184.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SUM\(importo\) OVER \(PARTITION BY cliente_id ORDER BY data_ordine\)) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 172.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FROM) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 172.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (tabella) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 172.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Definisce la tabella di partenza) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 172.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FROM clienti) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 160.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FROM) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 160.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (alias) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 160.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Assegna un nome breve alla tabella) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 160.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FROM clienti c) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 148.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FROM) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 148.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (subquery) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 148.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Usa una query come tabella temporanea) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 148.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FROM \(SELECT * FROM clienti\) c) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 136.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 136.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (INNER JOIN) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 136.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Tiene solo le righe con corrispondenza in entrambe) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 136.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (INNER JOIN ordini o ON c.id = o.cliente_id) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 124.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 124.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LEFT JOIN) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 117.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 8.1 Tm /F1 5.9 Tf 7 TL (Tiene tutte le righe della tabella sinistra e le corrispondenze) Tj T* (della destra) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 124.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LEFT JOIN ordini o ON c.id = o.cliente_id) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 105.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 105.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (RIGHT JOIN) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 98.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 8.1 Tm /F1 5.9 Tf 7 TL (Tiene tutte le righe della tabella destra e le corrispondenze) Tj T* (della sinistra) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 105.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (RIGHT JOIN ordini o ON c.id = o.cliente_id) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FULL OUTER JOIN) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Tiene tutte le righe di entrambe) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (FULL OUTER JOIN ordini o ON c.id = o.cliente_id) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CROSS JOIN) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Genera tutte le combinazioni possibili) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CROSS JOIN categorie) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ON) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Definisce la condizione di collegamento tra tabelle) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ON c.id = o.cliente_id) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 50.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 50.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (USING\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 50.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Collega usando una colonna con lo stesso nome) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 50.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (JOIN ordini USING\(cliente_id\)) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (=) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra i valori uguali) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE citt\340 = "Roma") Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 26.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 26.5 cm
+q
+BT 1 0 0 1 0 1.1 Tm 7 TL /F1 5.9 Tf 0 0 0 rg (<) Tj (>) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 26.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra i valori diversi) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 26.5 cm
+q
+BT 1 0 0 1 0 1.1 Tm 7 TL /F1 5.9 Tf 0 0 0 rg (WHERE citt\340 <) Tj (> "Roma") Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (>) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra i valori maggiori) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE prezzo > 100) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 2.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 2.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (<) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 2.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra i valori minori) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 2.5 cm
+q
+BT 1 0 0 1 0 1.1 Tm 7 TL /F1 5.9 Tf 0 0 0 rg (WHERE prezzo < 100) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.717647 .788235 .839216 RG
+.35 w
+n 0 501 m 773.8583 501 l S
+n 0 0 m 0 501 l S
+n 773.8583 0 m 773.8583 501 l S
+n 0 0 m 773.8583 0 l S
+n 0 489 m 773.8583 489 l S
+n 0 470 m 773.8583 470 l S
+n 0 458 m 773.8583 458 l S
+n 0 446 m 773.8583 446 l S
+n 0 434 m 773.8583 434 l S
+n 0 422 m 773.8583 422 l S
+n 0 410 m 773.8583 410 l S
+n 0 398 m 773.8583 398 l S
+n 0 386 m 773.8583 386 l S
+n 0 374 m 773.8583 374 l S
+n 0 362 m 773.8583 362 l S
+n 0 350 m 773.8583 350 l S
+n 0 338 m 773.8583 338 l S
+n 0 326 m 773.8583 326 l S
+n 0 314 m 773.8583 314 l S
+n 0 302 m 773.8583 302 l S
+n 0 290 m 773.8583 290 l S
+n 0 278 m 773.8583 278 l S
+n 0 266 m 773.8583 266 l S
+n 0 254 m 773.8583 254 l S
+n 0 242 m 773.8583 242 l S
+n 0 230 m 773.8583 230 l S
+n 0 218 m 773.8583 218 l S
+n 0 206 m 773.8583 206 l S
+n 0 194 m 773.8583 194 l S
+n 0 182 m 773.8583 182 l S
+n 0 170 m 773.8583 170 l S
+n 0 158 m 773.8583 158 l S
+n 0 146 m 773.8583 146 l S
+n 0 134 m 773.8583 134 l S
+n 0 115 m 773.8583 115 l S
+n 0 96 m 773.8583 96 l S
+n 0 84 m 773.8583 84 l S
+n 0 72 m 773.8583 72 l S
+n 0 60 m 773.8583 60 l S
+n 0 48 m 773.8583 48 l S
+n 0 36 m 773.8583 36 l S
+n 0 24 m 773.8583 24 l S
+n 0 12 m 773.8583 12 l S
+n 53.85827 0 m 53.85827 501 l S
+n 138.8976 0 m 138.8976 501 l S
+n 308.9764 0 m 308.9764 501 l S
+Q
+Q
+Q
+ 
+
+endstream
+endobj
+5 0 obj
+<<
+/Contents 4 0 R
+/MediaBox [ 0 0 841.8898 595.2756 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+6 0 obj
+<<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+>>
+endobj
+7 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+8 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+9 0 obj
+<<
+/BaseFont /Courier
+/Encoding /WinAnsiEncoding
+/Name /F3
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+10 0 obj
+<<
+/Length 19692
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 34.01575 185.4331 cm
+q
+.121569 .305882 .470588 rg
+n 0 384 773.8583 -12 re f*
+.929412 .956863 .980392 rg
+n 0 372 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 372 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 360 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 360 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 348 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 348 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 336 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 336 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 324 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 324 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 312 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 312 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 300 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 300 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 288 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 288 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 276 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 276 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 264 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 264 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 252 773.8583 -12 re f*
+1 .94902 .8 rg
+n 0 252 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 240 773.8583 -12 re f*
+.894118 .87451 .92549 rg
+n 0 240 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 228 773.8583 -12 re f*
+.894118 .87451 .92549 rg
+n 0 228 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 216 773.8583 -12 re f*
+.956863 .8 .8 rg
+n 0 216 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 204 773.8583 -12 re f*
+.956863 .8 .8 rg
+n 0 204 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 192 773.8583 -12 re f*
+.956863 .8 .8 rg
+n 0 192 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 180 773.8583 -12 re f*
+.815686 .878431 .890196 rg
+n 0 180 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 168 773.8583 -12 re f*
+.815686 .878431 .890196 rg
+n 0 168 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 156 773.8583 -12 re f*
+.815686 .878431 .890196 rg
+n 0 156 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 144 773.8583 -12 re f*
+.85098 .823529 .913725 rg
+n 0 144 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 132 773.8583 -12 re f*
+.85098 .823529 .913725 rg
+n 0 132 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 120 773.8583 -12 re f*
+.976471 .886275 .956863 rg
+n 0 120 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 108 773.8583 -12 re f*
+.976471 .886275 .956863 rg
+n 0 108 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 96 773.8583 -12 re f*
+.85098 .917647 .827451 rg
+n 0 96 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 84 773.8583 -12 re f*
+.85098 .917647 .827451 rg
+n 0 84 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 72 773.8583 -12 re f*
+.811765 .886275 .952941 rg
+n 0 72 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 60 773.8583 -12 re f*
+.956863 .8 .8 rg
+n 0 60 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 48 773.8583 -12 re f*
+.85098 .823529 .913725 rg
+n 0 48 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 36 773.8583 -12 re f*
+.988235 .898039 .803922 rg
+n 0 36 53.85827 -12 re f*
+.960784 .960784 .960784 rg
+n 0 24 773.8583 -12 re f*
+.988235 .898039 .803922 rg
+n 0 24 53.85827 -12 re f*
+.929412 .956863 .980392 rg
+n 0 12 773.8583 -12 re f*
+.917647 .819608 .862745 rg
+n 0 12 53.85827 -12 re f*
+1 1 1 rg
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 374.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (Clausola) Tj T* ET
+Q
+Q
+q
+1 0 0 1 56.85827 374.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (Operazione) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 374.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (A cosa serve) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 374.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F2 5.9 Tf 7 TL (Esempio) Tj T* ET
+Q
+Q
+0 0 0 rg
+q
+1 0 0 1 3 362.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 362.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (>=) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 362.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra i valori maggiori o uguali) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 362.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE et\340 >= 18) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 350.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 350.5 cm
+q
+BT 1 0 0 1 0 1.1 Tm 7 TL /F1 5.9 Tf 0 0 0 rg (<) Tj (=) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 350.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra i valori minori o uguali) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 350.5 cm
+q
+BT 1 0 0 1 0 1.1 Tm 7 TL /F1 5.9 Tf 0 0 0 rg (WHERE et\340 <) Tj (= 65) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 338.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 338.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (AND) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 338.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Richiede che pi\371 condizioni siano vere) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 338.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE citt\340 = "Roma" AND et\340 >= 18) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 326.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 326.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (OR) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 326.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Richiede che almeno una condizione sia vera) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 326.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE citt\340 = "Roma" OR citt\340 = "Milano") Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 314.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 314.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (NOT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 314.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Nega una condizione) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 314.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE NOT citt\340 = "Roma") Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 302.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 302.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (IN \(...\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 302.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Controlla se un valore \350 in una lista) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 302.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE citt\340 IN \("Roma","Milano","Napoli"\)) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 290.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 290.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (BETWEEN ... AND ...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 290.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Controlla se un valore \350 in un intervallo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 290.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE prezzo BETWEEN 10 AND 50) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 278.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 278.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LIKE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 278.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Cerca un pattern in una stringa) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 278.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE nome LIKE "A%") Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 266.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 266.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (IS NULL) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 266.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Trova i valori nulli) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 266.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE telefono IS NULL) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 254.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 254.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (IS NOT NULL) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 254.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Trova i valori non nulli) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 254.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE email IS NOT NULL) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 242.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 242.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (EXISTS \(...\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 242.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Verifica se una sottoquery restituisce righe) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 242.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE EXISTS \(SELECT 1 FROM ordini o WHERE o.cliente_id = c.id\)) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 230.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (GROUP BY) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 230.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (una colonna) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 230.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Raggruppa per una colonna) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 230.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (GROUP BY citt\340) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 218.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (GROUP BY) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 218.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (pi\371 colonne) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 218.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Raggruppa per pi\371 colonne) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 218.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (GROUP BY citt\340, categoria) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 206.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (HAVING) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 206.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (COUNT\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 206.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra gruppi in base al conteggio) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 206.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (HAVING COUNT\(*\) > 5) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 194.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (HAVING) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 194.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SUM\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 194.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra gruppi in base alla somma) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 194.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (HAVING SUM\(importo\) > 1000) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 182.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (HAVING) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 182.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (AVG\(\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 182.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Filtra gruppi in base alla media) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 182.5 cm
+q
+BT 1 0 0 1 0 1.1 Tm 7 TL /F1 5.9 Tf 0 0 0 rg (HAVING AVG\(prezzo\) < 50) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 170.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ORDER BY) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 170.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ASC) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 170.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Ordina in modo crescente) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 170.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ORDER BY nome ASC) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 158.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ORDER BY) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 158.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (DESC) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 158.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Ordina in modo decrescente) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 158.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ORDER BY prezzo DESC) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 146.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ORDER BY) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 146.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (pi\371 colonne) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 146.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Ordina usando pi\371 campi) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 146.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ORDER BY citt\340 ASC, nome DESC) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 134.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LIMIT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 134.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LIMIT n) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 134.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Mostra solo le prime n righe) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 134.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LIMIT 10) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 122.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LIMIT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 122.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (OFFSET n) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 122.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Salta le prime n righe) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 122.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (LIMIT 10 OFFSET 20) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 110.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (UNION) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 110.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (UNION) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 110.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Unisce due risultati senza duplicati) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 110.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT nome FROM clienti UNION SELECT nome FROM fornitori;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 98.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (UNION) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 98.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (UNION ALL) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 98.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Unisce due risultati con duplicati) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 98.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SELECT nome FROM clienti UNION ALL SELECT nome FROM fornitori;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (INSERT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (VALUES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Inserisce una nuova riga) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 86.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (INSERT INTO clienti \(nome, citt\340\) VALUES \("Mario", "Roma"\);) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (INSERT) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (INSERT ... SELECT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Inserisce righe prese da una query) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 74.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (INSERT INTO archivio_clienti SELECT * FROM clienti;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (UPDATE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (SET) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Aggiorna una o pi\371 colonne) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 62.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (UPDATE clienti SET citt\340 = "Milano" WHERE id = 1;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 50.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (DELETE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 50.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (WHERE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 50.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Elimina le righe filtrate) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 50.5 cm
+q
+BT 1 0 0 1 0 1.1 Tm 7 TL /F1 5.9 Tf 0 0 0 rg (DELETE FROM clienti WHERE et\340 < 18;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CREATE) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CREATE TABLE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Crea una nuova tabella) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 38.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (CREATE TABLE clienti \(id INT, nome TEXT\);) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 26.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ALTER) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 26.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ADD COLUMN) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 26.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Aggiunge una colonna) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 26.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ALTER TABLE clienti ADD email TEXT;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ALTER) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (RENAME) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Rinomina tabella o colonna) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 14.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (ALTER TABLE clienti RENAME TO clienti_attivi;) Tj T* ET
+Q
+Q
+BT /F2 10 Tf 12 TL ET
+q
+1 0 0 1 3 2.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (DROP) Tj T* ET
+Q
+Q
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 56.85827 2.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (DROP TABLE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 141.8976 2.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (Elimina una tabella) Tj T* ET
+Q
+Q
+q
+1 0 0 1 311.9764 2.5 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 1.1 Tm /F1 5.9 Tf 7 TL (DROP TABLE clienti;) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.717647 .788235 .839216 RG
+.35 w
+n 0 384 m 773.8583 384 l S
+n 0 372 m 0 384 l S
+n 0 0 m 0 372 l S
+n 773.8583 372 m 773.8583 384 l S
+n 773.8583 0 m 773.8583 372 l S
+n 0 0 m 773.8583 0 l S
+n 0 372 m 773.8583 372 l S
+n 53.85827 372 m 53.85827 384 l S
+n 138.8976 372 m 138.8976 384 l S
+n 308.9764 372 m 308.9764 384 l S
+n 0 360 m 773.8583 360 l S
+n 0 348 m 773.8583 348 l S
+n 0 336 m 773.8583 336 l S
+n 0 324 m 773.8583 324 l S
+n 0 312 m 773.8583 312 l S
+n 0 300 m 773.8583 300 l S
+n 0 288 m 773.8583 288 l S
+n 0 276 m 773.8583 276 l S
+n 0 264 m 773.8583 264 l S
+n 0 252 m 773.8583 252 l S
+n 0 240 m 773.8583 240 l S
+n 0 228 m 773.8583 228 l S
+n 0 216 m 773.8583 216 l S
+n 0 204 m 773.8583 204 l S
+n 0 192 m 773.8583 192 l S
+n 0 180 m 773.8583 180 l S
+n 0 168 m 773.8583 168 l S
+n 0 156 m 773.8583 156 l S
+n 0 144 m 773.8583 144 l S
+n 0 132 m 773.8583 132 l S
+n 0 120 m 773.8583 120 l S
+n 0 108 m 773.8583 108 l S
+n 0 96 m 773.8583 96 l S
+n 0 84 m 773.8583 84 l S
+n 0 72 m 773.8583 72 l S
+n 0 60 m 773.8583 60 l S
+n 0 48 m 773.8583 48 l S
+n 0 36 m 773.8583 36 l S
+n 0 24 m 773.8583 24 l S
+n 0 12 m 773.8583 12 l S
+n 53.85827 0 m 53.85827 372 l S
+n 138.8976 0 m 138.8976 372 l S
+n 308.9764 0 m 308.9764 372 l S
+Q
+Q
+Q
+ 
+
+endstream
+endobj
+11 0 obj
+<<
+/Contents 10 0 R
+/MediaBox [ 0 0 841.8898 595.2756 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+12 0 obj
+<<
+/Length 2556
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 25.84252 547.4331 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 4 Tm /F2 18 Tf 22 TL (Query master) Tj T* ET
+Q
+Q
+q
+1 0 0 1 25.84252 114.8331 cm
+%PreformattedPara
+0 0 0 rg
+BT 1 0 0 1 0 419.9 Tm /F3 6.7 Tf 7.9 TL (WITH clienti_filtrati AS \() Tj T* (    SELECT) Tj T* (        id, nome, cognome, citt\340, et\340, email, telefono, indirizzo) Tj T* (    FROM clienti) Tj T* (    WHERE et\340 >= 18) Tj T* (      AND citt\340 IN \('Roma', 'Milano', 'Napoli'\)) Tj T* (\),) Tj T* (ordini_base AS \() Tj T* (    SELECT) Tj T* (        o.id, o.cliente_id, o.importo, o.data_ordine,) Tj T* (        ROW_NUMBER\(\) OVER \() Tj T* (            PARTITION BY o.cliente_id) Tj T* (            ORDER BY o.importo DESC) Tj T* (        \) AS rn_importo) Tj T* (    FROM ordini o) Tj T* (    WHERE o.importo > 10) Tj T* (\)) Tj T* (SELECT) Tj T* (    c.id AS cliente_id,) Tj T* (    UPPER\(c.nome\) AS nome_upper,) Tj T* (    LOWER\(c.cognome\) AS cognome_lower,) Tj T* (    CONCAT\(c.nome, ' ', c.cognome\) AS nome_completo,) Tj T* (    CONCAT_WS\(' - ' , c.nome, c.cognome, c.citt\340\) AS nome_cognome_citt\340,) Tj T* (    LEFT\(c.nome, 3\) AS iniziale_nome,) Tj T* (    RIGHT\(c.telefono, 3\) AS ultime_3_cifre,) Tj T* (    SUBSTRING\(c.email, 1, 5\) AS email_inizio,) Tj T* (    POSITION\('@' IN c.email\) AS posizione_at,) Tj T* (    LENGTH\(c.email\) AS lunghezza_email,) Tj T* (    EXTRACT\(MONTH FROM o.data_ordine\) AS mese_ordine,) Tj T* (    EXTRACT\(YEAR FROM o.data_ordine\) AS anno_ordine,) Tj T* (    CAST\(o.importo AS INT\) AS importo_intero,) Tj T* (    COALESCE\(c.telefono, c.email, 'N/D'\) AS contatto,) Tj T* (    CASE) Tj T* (        WHEN o.importo > 1000 THEN 'Alto') Tj T* (        WHEN o.importo > 500 THEN 'Medio') Tj T* (        ELSE 'Basso') Tj T* (    END AS fascia_importo,) Tj T* (    o.rn_importo,) Tj T* (    COUNT\(*\) AS totale_righe,) Tj T* (    COUNT\(DISTINCT o.id\) AS ordini_unici,) Tj T* (    SUM\(o.importo\) AS fatturato_totale,) Tj T* (    AVG\(o.importo\) AS importo_medio,) Tj T* (    MIN\(o.data_ordine\) AS primo_ordine,) Tj T* (    MAX\(o.importo\) AS ordine_max) Tj T* (FROM clienti_filtrati c) Tj T* (INNER JOIN ordini_base o ON c.id = o.cliente_id) Tj T* (WHERE c.email IS NOT NULL) Tj T* (  AND c.nome LIKE 'A%') Tj T* (GROUP BY) Tj T* (    c.id, c.nome, c.cognome, c.citt\340, c.email, c.telefono,) Tj T* (    o.id, o.importo, o.data_ordine, o.rn_importo) Tj T* (HAVING COUNT\(*\) >= 1) Tj T* (ORDER BY fatturato_totale DESC, nome_completo ASC) Tj T* (LIMIT 20 OFFSET 0;) Tj T* ET
+Q
+ 
+
+endstream
+endobj
+13 0 obj
+<<
+/Contents 12 0 R
+/MediaBox [ 0 0 841.8898 595.2756 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000127 00000 n 
+0000000176 00000 n 
+0000025807 00000 n 
+0000026006 00000 n 
+0000026057 00000 n 
+0000026164 00000 n 
+0000026276 00000 n 
+0000026381 00000 n 
+0000046127 00000 n 
+0000046328 00000 n 
+0000048937 00000 n 
+trailer
+<<
+/Size 14
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+49138
+%%EOF
