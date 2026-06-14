@@ -13,7 +13,7 @@ I file sono stati realizzati su mie indicazioni con il supporto dell'AI, con l'o
 | `numpy_pandas_essenziali.pdf` | **NumPy & Pandas** | Le funzioni e i metodi più usati per l'analisi dati: creazione array, operazioni statistiche, caricamento e pulizia dati, join, groupby, pivot e molto altro |
 | `strutture_dati_python_essenziali.pdf` | **Strutture dati Python** | Panoramica e metodi principali di list, tuple, dict, str, set e array — con sintassi, esempi e note su quando usare cosa |
 | `riferimento_sql_completo.pdf` | **SQL** | Tutte le clausole principali: SELECT, JOIN, WHERE, GROUP BY, HAVING, window functions, CTE, DML/DDL — con una query master completa alla fine |
-| `sql-execution-explainer.html` | **SQL interattivo** | Tool a 3 pannelli: incolla una query SQL e vedi in tempo reale come viene suddivisa per clausola (sinistra), il testo originale (centro) e l'ordine reale di esecuzione del motore SQL (destra) — con parser che gestisce CTE e subquery |
+| `sql-execution-explainer.html` | **SQL interattivo** | Tool a 3 pannelli: incolla una query SQL e vedi in tempo reale come viene suddivisa per clausola (sinistra), il testo originale (centro) e l'ordine reale di esecuzione del motore SQL (destra) — con parser che gestisce CTE e subquery. **[→ Apri live](https://sql-explainer.netlify.app/)** |
 
 ---
 
@@ -37,6 +37,8 @@ Il file `sql-execution-explainer.html` si apre direttamente nel browser, senza i
 2. Aprilo con qualsiasi browser (Chrome, Firefox, Edge…)
 3. Incolla o scrivi una query SQL nel pannello centrale
 4. Premi **Analizza**
+
+🔗 **Oppure aprilo direttamente online: [sql-explainer.netlify.app](https://sql-explainer.netlify.app/)**
 
 ---
 
