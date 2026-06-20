@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Execution Order — Explainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<style>
+:root {
+  --bg: #0e1117;
+  --surface: #161b27;
+  --surface2: #1e2535;
+  --border: #2a3147;
+  --border2: #3a4560;
+  --text: #e8eaf0;
+  --text2: #8892a4;
+  --text3: #525d72;
+  --accent: #4f8ef7;
+  --accent-dim: #1a2e52;
+  --accent-text: #a0c2ff;
+  --green: #2dd4a0;
+  --green-dim: #0d2e22;
+  --amber: #f5a623;
+  --amber-dim: #2e1f09;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --r: 8px;
+  --rl: 12px;
+  --hh: 50px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; overflow: hidden; }
+
+/* ── Header ── */
+header {
+  height: var(--hh);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.25rem;
+  display: flex; align-items: center; gap: 10px;
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(14,17,23,0.96);
+  backdrop-filter: blur(10px);
+  z-index: 300;
+}
+.logo { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--accent-text); letter-spacing: 0.04em; }
+.logo span { color: var(--text2); }
+.badge { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--accent-dim); color: var(--accent-text); padding: 2px 8px; border-radius: 20px; border: 1px solid var(--accent); }
+.hdr-sep { flex: 1; }
+.hdr-btns { display: flex; gap: 6px; }
+
+/* ── 3-col shell ── */
+.shell {
+  position: fixed;
+  top: var(--hh); left: 0; right: 0; bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  overflow: hidden;
+}
+
+/* ── Shared column style ── */
+.col {
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+.col:last-child { border-right: none; }
+
+.col-head {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  display: flex; align-items: center; gap: 8px;
+}
+.col-title { font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text3); }
+.col-tag { font-family: var(--mono); font-size: 10px; color: var(--accent-text); background: var(--accent-dim); border: 1px solid rgba(79,142,247,0.25); padding: 1px 7px; border-radius: 3px; margin-left: auto; }
+.col-body { flex: 1; overflow-y: auto; padding: 0; }
+
+/* ── LEFT COL: reference accordion ── */
+.ref-section { border-bottom: 1px solid var(--border); }
+.ref-section:last-child { border-bottom: none; }
+
+.ref-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--surface);
+  transition: background 0.12s;
+  position: sticky; top: 0; z-index: 1;
+}
+.ref-head:hover { background: var(--surface2); }
+.ref-section.open .ref-head { background: var(--surface2); }
+
+.ref-num {
+  font-family: var(--mono);
+  font-size: 9px; font-weight: 500;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+}
+.ref-section.active-exec .ref-num { background: var(--accent-dim); color: var(--accent-text); border-color: var(--accent); }
+
+.ref-label { font-size: 12.5px; font-weight: 500; color: var(--text2); flex: 1; }
+.ref-section.active-exec .ref-label { color: var(--text); }
+
+.ref-exec-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--accent-dim);
+  color: var(--accent-text);
+  border: 1px solid rgba(79,142,247,0.2);
+  white-space: nowrap;
+}
+
+.ref-chev { color: var(--text3); transition: transform 0.18s; flex-shrink: 0; }
+.ref-section.open .ref-chev { transform: rotate(180deg); }
+
+.ref-body { display: none; padding: 0 0 10px; }
+.ref-section.open .ref-body { display: block; }
+
+.ref-rows { width: 100%; border-collapse: collapse; }
+.ref-rows tr { border-bottom: 1px solid var(--border); }
+.ref-rows tr:last-child { border-bottom: none; }
+.ref-rows td { padding: 8px 14px; font-size: 12px; vertical-align: top; }
+.ref-op { font-family: var(--mono); font-size: 11px; color: var(--accent-text); white-space: normal; padding-top: 10px !important; }
+.ref-desc { color: var(--text2); line-height: 1.6; font-size: 12px; }
+.ref-ex { font-family: var(--mono); font-size: 10.5px; color: var(--green); display: block; margin-top: 5px; opacity: 0.85; white-space: pre; }
+
+.master-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--sans); font-size: 10px; font-weight: 600;
+  cursor: pointer; padding: 3px 10px;
+  border-radius: var(--r);
+  border: 1px solid var(--amber);
+  background: var(--amber-dim); color: var(--amber);
+  transition: all 0.13s; letter-spacing: 0.02em; white-space: nowrap;
+}
+.master-btn:hover { background: var(--amber); color: #0e1117; }
+
+.col-action-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--sans); font-size: 10px; font-weight: 500;
+  cursor: pointer; padding: 3px 10px;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text2);
+  transition: all 0.13s; white-space: nowrap;
+}
+.col-action-btn:hover { border-color: var(--text2); color: var(--text); background: var(--surface2); }
+.col-action-btn.primary { background: var(--accent); color: #fff; border-color: transparent; font-weight: 600; }
+.col-action-btn.primary:hover { background: #6a9fff; }
+.col-action-btn.primary:active { transform: scale(0.97); }
+
+.examples-dropdown { position: relative; }
+.examples-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 500;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--rl);
+  min-width: 210px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+.examples-dropdown.open .examples-menu { display: block; }
+.examples-dropdown.open .dropdown-chev { transform: rotate(180deg); }
+.dropdown-chev { transition: transform 0.15s; }
+.examples-menu-item {
+  padding: 8px 14px;
+  font-size: 12.5px;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background 0.1s;
+  display: flex; align-items: center; gap: 6px;
+}
+.examples-menu-item:hover { background: var(--surface2); color: var(--text); }
+.examples-menu-sep { height: 1px; background: var(--border); margin: 4px 0; }
+.examples-menu-master { color: var(--amber); font-weight: 600; }
+.examples-menu-master:hover { background: var(--amber-dim); color: var(--amber); }
+
+.expand-all-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--sans); font-size: 10px; font-weight: 500;
+  cursor: pointer; padding: 3px 9px;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text2);
+  transition: all 0.13s;
+  white-space: nowrap;
+}
+.expand-all-btn:hover { border-color: var(--text2); color: var(--text); background: var(--surface); }
+.expand-all-btn svg { transition: transform 0.2s; }
+.expand-all-btn.expanded svg { transform: rotate(180deg); }
+.expand-all-btn.order-execution {
+  border-color: var(--amber);
+  color: var(--amber);
+  background: var(--amber-dim);
+}
+
+.ref-try-row {
+  padding: 8px 14px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.ref-try-row-top {
+  border-bottom: 1px solid var(--border);
+  border-top: none;
+}
+.ref-try-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--sans); font-size: 11px; font-weight: 600;
+  cursor: pointer; padding: 5px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--amber);
+  background: var(--amber-dim); color: var(--amber);
+  transition: all 0.13s; letter-spacing: 0.02em;
+}
+.ref-try-btn:hover { background: var(--amber); color: #0e1117; }
+
+.ref-row-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: 6px;
+  font-family: var(--sans); font-size: 10px; font-weight: 500;
+  cursor: pointer; padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--amber);
+  background: var(--amber-dim); color: var(--amber);
+  opacity: 0.85;
+  transition: all 0.13s;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.ref-row-btn:hover { opacity: 1; background: var(--amber); color: #0e1117; }
+
+/* ── CENTER COL: editor ── */
+.editor-wrap { padding: 14px; display: flex; flex-direction: column; height: 100%; }
+textarea {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.75;
+  padding: 14px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--rl);
+  outline: none;
+  resize: none;
+  tab-size: 2;
+  transition: border-color 0.15s;
+}
+textarea:focus { border-color: var(--border2); }
+textarea::placeholder { color: var(--text3); }
+.btns { display: flex; gap: 7px; flex-wrap: wrap; }
+button {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  cursor: pointer; padding: 6px 13px;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text2);
+  transition: all 0.13s;
+}
+button:hover { border-color: var(--text2); color: var(--text); background: var(--surface2); }
+button.primary { background: var(--accent); color: #fff; border-color: transparent; font-weight: 600; }
+button.primary:hover { background: #6a9fff; }
+button.primary:active { transform: scale(0.97); }
+button svg { vertical-align: -2px; margin-right: 3px; }
+
+/* ── RIGHT COL: execution steps ── */
+.exec-list { padding: 14px; display: flex; flex-direction: column; gap: 0; }
+
+.exec-block {
+  border: 1px solid var(--border2);
+  border-radius: var(--rl);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.exec-block + .exec-block { margin-top: 0; }
+
+.exec-sep {
+  display: flex; align-items: stretch;
+  padding-left: 22px;
+  height: 26px;
+}
+.exec-sep-inner {
+  display: flex; flex-direction: column; align-items: center; width: 1px;
+}
+.exec-sep-line { flex: 1; width: 1px; background: var(--border2); }
+.exec-sep-arrow {
+  width: 0; height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 5px solid var(--border2);
+}
+
+.exec-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.exec-seq {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: var(--accent-dim); color: var(--accent-text);
+  border: 1px solid var(--accent);
+}
+.exec-name { font-size: 13.5px; font-weight: 600; color: var(--text); flex: 1; }
+.exec-kw {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--accent-text); background: var(--accent-dim);
+  border: 1px solid rgba(79,142,247,0.25);
+  padding: 2px 9px; border-radius: 4px;
+}
+.exec-body { padding: 12px 14px 14px; }
+.exec-desc { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 10px; }
+.exec-snippet {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 9px 13px;
+}
+.exec-snippet-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); font-weight: 600; margin-bottom: 4px; }
+.exec-snippet code { font-family: var(--mono); font-size: 12.5px; color: var(--accent-text); white-space: pre-wrap; word-break: break-all; display: block; }
+.exec-tip {
+  margin-top: 9px; padding: 8px 12px;
+  background: var(--amber-dim);
+  border: 1px solid rgba(245,166,35,0.18);
+  border-radius: var(--r);
+  font-size: 12px; color: #c89040; line-height: 1.55;
+}
+
+/* empty */
+.empty-ex {
+  text-align: center; padding: 3rem 1rem;
+  border: 1px dashed var(--border2);
+  border-radius: var(--rl);
+  color: var(--text3); font-size: 13px; line-height: 2;
+}
+.empty-ex svg { display: block; margin: 0 auto 10px; opacity: 0.35; }
+
+
+/* ── RESULT COL ── */
+.result-wrap { padding: 14px; overflow: auto; height: 100%; }
+
+.result-info {
+  font-size: 11px; color: var(--text3); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.result-count {
+  font-family: var(--mono); font-size: 10px;
+  background: var(--accent-dim); color: var(--accent-text);
+  border: 1px solid rgba(79,142,247,0.25);
+  padding: 1px 8px; border-radius: 3px;
+}
+.result-time { color: var(--text3); font-size: 10px; }
+
+.result-table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: var(--rl); }
+.result-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; font-family: var(--mono);
+}
+.result-table th {
+  background: var(--surface2);
+  color: var(--accent-text);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 7px 12px; text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  position: sticky; top: 0; z-index: 1;
+}
+.result-table td {
+  padding: 6px 12px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  max-width: 200px; overflow: hidden; text-overflow: ellipsis;
+}
+.result-table tr:last-child td { border-bottom: none; }
+.result-table tr:hover td { background: var(--surface2); color: var(--text); }
+.result-table td.null-val { color: var(--text3); font-style: italic; }
+.result-table td.num-val { color: var(--green); }
+
+.result-error {
+  padding: 12px 14px;
+  background: rgba(220,50,50,0.08);
+  border: 1px solid rgba(220,50,50,0.25);
+  border-radius: var(--r);
+  font-family: var(--mono); font-size: 12px;
+  color: #e87070; line-height: 1.6;
+}
+.result-error strong { display: block; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+.result-ddl {
+  padding: 12px 14px;
+  background: var(--green-dim);
+  border: 1px solid rgba(45,212,160,0.2);
+  border-radius: var(--r);
+  font-size: 13px; color: var(--green);
+}
+
+.result-cte-banner {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 8px 12px; margin-bottom: 10px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(79,142,247,0.25);
+  border-radius: var(--r);
+  font-size: 11px;
+}
+.result-cte-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--text3); margin-right: 4px;
+}
+.result-cte-name {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--accent-text);
+  background: rgba(79,142,247,0.12);
+  border: 1px solid rgba(79,142,247,0.3);
+  padding: 1px 8px; border-radius: 4px;
+}
+.result-cte-final {
+  color: var(--green);
+  background: var(--green-dim);
+  border-color: rgba(45,212,160,0.3);
+}
+.result-cte-arrow { color: var(--text3); font-size: 12px; }
+
+
+.schema-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text);
+  margin-bottom: 6px;
+}
+.schema-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 11px; font-family: var(--mono);
+  border: 1px solid var(--border); border-radius: var(--r); overflow: hidden;
+}
+.schema-table th {
+  background: var(--surface2); color: var(--accent-text);
+  padding: 5px 10px; text-align: left; font-size: 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.schema-table td { padding: 5px 10px; color: var(--text2); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.schema-table tr:last-child td { border-bottom: none; }
+.schema-table tr:hover td { background: var(--surface2); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr 1fr; }
+  .col:nth-child(3) { display: none; }
+  .col:last-child { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* ════════════════════════════════════════════════
+   GUIDE TOGGLE BUTTON (header)
+   ════════════════════════════════════════════════ */
+.guide-toggle-btn {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  cursor: pointer; padding: 7px 16px;
+  border-radius: var(--rl);
+  border: 1px solid var(--amber);
+  background: var(--amber-dim); color: var(--amber);
+  transition: all 0.15s; letter-spacing: 0.01em;
+}
+.guide-toggle-btn:hover { background: var(--amber); color: #0e1117; }
+.guide-toggle-btn.active { background: var(--amber); color: #0e1117; }
+
+/* ════════════════════════════════════════════════
+   GUIDE VIEW — full reasoning guide
+   ════════════════════════════════════════════════ */
+.guide-shell {
+  position: fixed;
+  top: var(--hh); left: 0; right: 0; bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.guide-col { overflow-y: auto; height: 100%; }
+.guide-col-main { padding: 28px 36px 60px; border-right: 1px solid var(--border); }
+.guide-col-sticky { padding: 0; background: var(--surface); }
+.guide-sticky-inner { position: sticky; top: 0; padding: 28px 24px 24px; }
+
+.guide-section { margin-bottom: 36px; }
+.guide-section:last-child { margin-bottom: 0; }
+.guide-section-accent { padding-bottom: 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.guide-section-accent:last-child { border-bottom: none; }
+
+.guide-h2 {
+  font-size: 16px; font-weight: 700; color: var(--text);
+  margin-bottom: 10px; letter-spacing: -0.01em;
+  display: flex; align-items: center; gap: 8px;
+}
+.guide-intro { font-size: 13px; color: var(--text2); margin-bottom: 12px; line-height: 1.6; }
+.guide-intro code { font-family: var(--mono); color: var(--accent-text); background: var(--accent-dim); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+.guide-footnote { font-size: 11px; color: var(--text3); margin-top: 6px; font-style: italic; }
+
+.guide-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12.5px;
+  border: 1px solid var(--border); border-radius: var(--rl);
+  overflow: hidden; margin-bottom: 4px;
+}
+.guide-table th {
+  background: var(--surface2); color: var(--text3);
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 8px 12px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.guide-table td {
+  padding: 8px 12px; color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.5;
+}
+.guide-table tr:last-child td { border-bottom: none; }
+.guide-table tr:hover td { background: var(--surface2); }
+.guide-table code {
+  font-family: var(--mono); font-size: 11.5px;
+  color: var(--accent-text); background: var(--accent-dim);
+  padding: 1px 6px; border-radius: 3px; white-space: nowrap;
+}
+
+.guide-callout {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 12.5px; color: var(--text2); line-height: 1.65;
+}
+.guide-callout strong { display: block; color: var(--text); margin-bottom: 6px; font-size: 12px; }
+.guide-callout ul { margin: 6px 0 0 18px; padding: 0; }
+.guide-callout li { margin-bottom: 4px; }
+.guide-callout code { font-family: var(--mono); font-size: 11.5px; color: var(--accent-text); background: var(--accent-dim); padding: 1px 5px; border-radius: 3px; }
+.guide-callout-warn { border-left-color: var(--amber); background: var(--amber-dim); color: #c89040; }
+.guide-callout-warn strong { color: var(--amber); }
+.guide-callout-final { border-left-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 500; }
+
+.guide-code {
+  font-family: var(--mono); font-size: 12px; color: var(--accent-text);
+  background: var(--bg); border: 1px solid var(--border2);
+  border-radius: var(--r); padding: 10px 14px; margin-top: 8px;
+  white-space: pre; line-height: 1.6;
+}
+
+.guide-order-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  margin-bottom: 10px; font-family: var(--mono); font-size: 11px;
+}
+.guide-order-row span:not(.guide-order-arrow) {
+  padding: 3px 8px; border-radius: 4px;
+  background: var(--surface); border: 1px solid var(--border2);
+  color: var(--text2);
+}
+.guide-order-arrow { color: var(--text3); font-size: 11px; }
+.guide-order-real span:not(.guide-order-arrow) { color: var(--accent-text); border-color: rgba(79,142,247,0.3); background: var(--accent-dim); }
+.guide-order-highlight { background: var(--amber-dim) !important; border-color: var(--amber) !important; color: var(--amber) !important; font-weight: 700; }
+
+.guide-steps { margin: 0 0 0 18px; padding: 0; }
+.guide-steps li { font-size: 12.5px; color: var(--text2); margin-bottom: 10px; line-height: 1.6; }
+.guide-steps strong { color: var(--text); }
+
+@media (max-width: 900px) {
+  .guide-shell { grid-template-columns: 1fr; }
+  .guide-col-sticky { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">SQL<span>.</span>exec</span>
+  <span class="badge">3-Panel Explainer</span>
+  <button class="guide-toggle-btn" id="guide-toggle-btn" onclick="toggleGuideView()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+    <span>Guida al Ragionamento</span>
+  </button>
+</header>
+
+<div class="shell" id="main-shell">
+
+  <!-- ══ LEFT: Reference ══ -->
+  <div class="col" id="col-left">
+    <div class="col-head">
+      <span class="col-title">Riferimento SQL</span>
+      <button class="expand-all-btn" id="order-toggle-btn" onclick="toggleRefOrder()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h12M3 18h6"/></svg>
+        <span>Ordine scrittura</span>
+      </button>
+      <button class="expand-all-btn" id="expand-all-btn" onclick="toggleAllRef()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        <span>Espandi tutti</span>
+      </button>
+      <span class="col-tag">scrittura</span>
+    </div>
+    <div class="col-body" id="ref-body">
+      <!-- JS popola qui -->
+    </div>
+  </div>
+
+  <!-- ══ CENTER: Editor ══ -->
+  <div class="col">
+    <div class="col-head">
+      <span class="col-title">La tua query</span>
+      <div class="examples-dropdown" id="examples-dropdown">
+        <button class="master-btn" onclick="toggleExamplesMenu(event)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span>Esempi importanti</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dropdown-chev"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="examples-menu" id="examples-menu">
+          <div class="examples-menu-item" onclick="loadNamedExample('duplicati')">Trovare duplicati 1 (GROUP BY)</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('duplicati2')">Trovare duplicati 2 (EXISTS)</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('topN')">Top N per gruppo</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('running_total')">Totale cumulativo</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('missing')">Clienti senza ordini</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('yoy')">Confronto anno su anno</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('percentuale')">Percentuale sul totale</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('pivot')">Pivot manuale con CASE</div>
+          <div class="examples-menu-item" onclick="loadNamedExample('rank_filter')">Filtrare per rank (CTE)</div>
+          <div class="examples-menu-sep"></div>
+          <div class="examples-menu-item examples-menu-master" onclick="loadNamedExample('master')">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            Query master
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-left:auto">
+        <button class="col-action-btn" onclick="clearAll()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14H6L5 6"></path></svg>
+          Pulisci
+        </button>
+        <button class="col-action-btn primary" onclick="analyze()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Analizza
+        </button>
+      </div>
+    </div>
+    <div class="col-body">
+      <div class="editor-wrap">
+        <textarea id="sql" spellcheck="false" placeholder="-- Incolla o scrivi qui la tua query SQL..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: Execution ══ -->
+  <div class="col">
+    <div class="col-head">
+      <span class="col-title">Ordine di esecuzione</span>
+      <span class="col-tag">runtime</span>
+    </div>
+    <div class="col-body">
+      <div class="exec-list" id="exec-list">
+        <div class="empty-ex">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 10h16M4 14h10M4 18h6"/></svg>
+          Premi <strong>Analizza</strong> per vedere<br>l'ordine reale di esecuzione.
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ RESULT: SQL Output ══ -->
+  <div class="col">
+    <div class="col-head">
+      <span class="col-title">Risultato</span>
+      <div style="display:flex;gap:6px;margin-left:auto">
+        <button class="expand-all-btn" id="back-result-btn" onclick="showLastResult()" style="display:none">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Risultato</span>
+        </button>
+        <button class="expand-all-btn" onclick="showSchema()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Schema</span>
+        </button>
+      </div>
+      <span class="col-tag" id="result-tag">in attesa</span>
+    </div>
+    <div class="col-body">
+      <div class="result-wrap" id="result-wrap">
+        <div class="empty-ex">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Premi <strong>Analizza</strong> per eseguire<br>la query sui dati di esempio.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     GUIDE VIEW — Reasoning guide (hidden by default)
+     ══════════════════════════════════════ -->
+<div class="guide-shell" id="guide-shell" style="display:none">
+
+  <!-- LEFT: tabular reference sections -->
+  <div class="guide-col guide-col-main">
+    <div class="guide-section">
+      <h2 class="guide-h2">1. Mappa Domanda → Clausola</h2>
+      <p class="guide-intro">Quando leggi una domanda in linguaggio naturale, queste sono le espressioni tipiche che segnalano quale strumento SQL usare.</p>
+      <table class="guide-table">
+        <thead><tr><th>Se la domanda chiede...</th><th>Probabilmente serve</th><th>Esempio</th></tr></thead>
+        <tbody>
+          <tr><td>"Quanti...", "Conta..."</td><td><code>COUNT()</code></td><td><code>COUNT(*), COUNT(DISTINCT col)</code></td></tr>
+          <tr><td>"...per ogni categoria/gruppo/tipo"</td><td><code>GROUP BY</code></td><td><code>GROUP BY genere</code></td></tr>
+          <tr><td>"...solo quelli con più di X" (su un aggregato)</td><td><code>HAVING</code></td><td><code>HAVING COUNT(*) > 10</code></td></tr>
+          <tr><td>"...solo quelli con X" (su righe singole)</td><td><code>WHERE</code></td><td><code>WHERE price > 0</code></td></tr>
+          <tr><td>"Il più alto/basso/migliore/peggiore"</td><td><code>ORDER BY ... LIMIT 1</code></td><td></td></tr>
+          <tr><td>"Top N", "i primi N"</td><td><code>ORDER BY ... LIMIT N</code></td><td></td></tr>
+          <tr><td>"Media di...", "In media..."</td><td><code>AVG()</code></td><td></td></tr>
+          <tr><td>"Totale di...", "Somma..."</td><td><code>SUM()</code></td><td></td></tr>
+          <tr><td>"Il valore minimo/massimo"</td><td><code>MIN(), MAX()</code></td><td></td></tr>
+          <tr><td>"Percentuale di..."</td><td>divisione + cast</td><td><code>col::numeric / totale * 100</code></td></tr>
+          <tr><td>"Per ogni X, qual è il migliore Y"</td><td>window function + <code>PARTITION BY</code></td><td><code>ROW_NUMBER() OVER (PARTITION BY x ORDER BY y DESC)</code></td></tr>
+          <tr><td>"Confronta gruppo A con gruppo B"</td><td><code>CASE WHEN</code> + <code>GROUP BY</code></td><td></td></tr>
+          <tr><td>"Solo i dati validi/esistenti"</td><td><code>WHERE col IS NOT NULL</code></td><td></td></tr>
+          <tr><td>"Combinando dati da due tabelle"</td><td><code>JOIN</code></td><td></td></tr>
+          <tr><td>"Che hanno fatto sia X che Y"</td><td><code>JOIN</code>, <code>INTERSECT</code>, o subquery con <code>EXISTS</code></td><td></td></tr>
+          <tr><td>"Che NON hanno fatto X"</td><td><code>LEFT JOIN ... WHERE IS NULL</code>, o <code>NOT EXISTS</code></td><td></td></tr>
+          <tr><td>"Classifica, posizione, rank"</td><td><code>RANK(), DENSE_RANK(), ROW_NUMBER()</code></td><td></td></tr>
+          <tr><td>"Cumulativo, progressivo nel tempo"</td><td><code>SUM() OVER (ORDER BY data)</code></td><td></td></tr>
+          <tr><td>"Confronta con il valore precedente/successivo"</td><td><code>LAG(), LEAD()</code></td><td></td></tr>
+          <tr><td>"Quartili, percentili, fasce"</td><td><code>NTILE()</code>, <code>CASE WHEN</code> con range</td><td></td></tr>
+          <tr><td>"Valori unici, senza ripetizioni"</td><td><code>DISTINCT</code></td><td></td></tr>
+          <tr><td>"Se nullo, usa un valore di default"</td><td><code>COALESCE()</code></td><td></td></tr>
+          <tr><td>"Trasforma stringa vuota in nullo"</td><td><code>NULLIF()</code></td><td></td></tr>
+          <tr><td>"Dividi una stringa in più righe"</td><td><code>unnest(string_to_array())</code></td><td></td></tr>
+          <tr><td>"Prendi solo una parte di una stringa"</td><td><code>SPLIT_PART(), SUBSTRING()</code></td><td></td></tr>
+          <tr><td>"Filtra per intervallo di date"</td><td><code>WHERE data BETWEEN x AND y</code></td><td></td></tr>
+          <tr><td>"Raggruppa per anno/mese da una data"</td><td><code>EXTRACT(YEAR FROM ...), DATE_TRUNC()</code></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="guide-section">
+      <h2 class="guide-h2">2. Le window function più usate</h2>
+      <table class="guide-table">
+        <thead><tr><th>Funzione</th><th>Cosa fa</th><th>Quando usarla</th></tr></thead>
+        <tbody>
+          <tr><td><code>ROW_NUMBER()</code></td><td>Numera le righe 1,2,3... senza pareggi</td><td>"Prendi solo il primo/migliore per gruppo"</td></tr>
+          <tr><td><code>RANK()</code></td><td>Numera ma lascia "buchi" in caso di pareggio (1,1,3)</td><td>Classifiche dove i pareggi contano</td></tr>
+          <tr><td><code>DENSE_RANK()</code></td><td>Come RANK ma senza buchi (1,1,2)</td><td>Classifiche compatte</td></tr>
+          <tr><td><code>LAG(col)</code></td><td>Valore della riga precedente</td><td>"Confronta con il mese prima"</td></tr>
+          <tr><td><code>LEAD(col)</code></td><td>Valore della riga successiva</td><td>"Confronta con il mese dopo"</td></tr>
+          <tr><td><code>SUM() OVER()</code></td><td>Somma cumulativa</td><td>"Totale progressivo nel tempo"</td></tr>
+          <tr><td><code>AVG() OVER()</code></td><td>Media mobile/di gruppo senza comprimere righe</td><td>"Confronta ogni riga con la media del gruppo"</td></tr>
+          <tr><td><code>NTILE(4)</code></td><td>Divide in N fasce uguali</td><td>"Dividi in quartili"</td></tr>
+        </tbody>
+      </table>
+      <div class="guide-callout">
+        <strong>Differenza chiave GROUP BY vs PARTITION BY</strong>
+        <ul>
+          <li><code>GROUP BY</code> → comprime le righe, ne resta una per gruppo</li>
+          <li><code>PARTITION BY</code> (dentro <code>OVER()</code>) → mantiene tutte le righe, calcola il valore rispetto al gruppo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2 class="guide-h2">3. Tipi di JOIN</h2>
+      <table class="guide-table">
+        <thead><tr><th>JOIN</th><th>Cosa restituisce</th></tr></thead>
+        <tbody>
+          <tr><td><code>INNER JOIN</code></td><td>Solo righe presenti in entrambe le tabelle</td></tr>
+          <tr><td><code>LEFT JOIN</code></td><td>Tutte le righe della tabella sinistra, anche senza corrispondenza (NULL a destra)</td></tr>
+          <tr><td><code>RIGHT JOIN</code></td><td>Tutte le righe della tabella destra, anche senza corrispondenza</td></tr>
+          <tr><td><code>FULL JOIN</code></td><td>Tutte le righe di entrambe, corrispondenti o no</td></tr>
+        </tbody>
+      </table>
+      <div class="guide-callout">
+        <strong>Trucco per "che NON hanno fatto X"</strong>
+        <pre class="guide-code">LEFT JOIN tabella2 ON ...
+WHERE tabella2.col IS NULL</pre>
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2 class="guide-h2">4. Cast e conversioni comuni</h2>
+      <table class="guide-table">
+        <thead><tr><th>Da → A</th><th>Sintassi</th></tr></thead>
+        <tbody>
+          <tr><td>Intero → Decimale (per divisioni)</td><td><code>col::numeric</code> o <code>col::float</code></td></tr>
+          <tr><td>Testo → Data</td><td><code>col::date</code></td></tr>
+          <tr><td>Testo → Numero</td><td><code>col::integer, col::numeric</code></td></tr>
+          <tr><td>Arrotondare decimali</td><td><code>ROUND(col::numeric, 2)</code></td></tr>
+          <tr><td>Numero → Testo</td><td><code>col::text</code></td></tr>
+        </tbody>
+      </table>
+      <div class="guide-callout guide-callout-warn">
+        <strong>⚠️ Trabocchetto comune</strong>
+        Dividere due interi in SQL tronca il risultato (3/4 = 0). Serve sempre un cast prima della divisione se vuoi i decimali.
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2 class="guide-h2">5. Gestione di stringhe multivalore</h2>
+      <p class="guide-intro">Esempio: una colonna con valori tipo <code>"Action;RPG;Indie"</code></p>
+      <table class="guide-table">
+        <thead><tr><th>Vuoi...</th><th>Funzione</th></tr></thead>
+        <tbody>
+          <tr><td>Solo il primo valore</td><td><code>SPLIT_PART(col, ';', 1)</code></td></tr>
+          <tr><td>Tutti i valori, una riga per ciascuno</td><td><code>unnest(string_to_array(col, ';'))</code></td></tr>
+          <tr><td>Contare quanti valori ci sono</td><td><code>array_length(string_to_array(col, ';'), 1)</code></td></tr>
+          <tr><td>Rimuovere spazi residui dopo lo split</td><td>avvolgi sempre con <code>TRIM()</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="guide-section">
+      <h2 class="guide-h2">6. Gestione valori nulli o sporchi</h2>
+      <table class="guide-table">
+        <thead><tr><th>Situazione</th><th>Soluzione</th></tr></thead>
+        <tbody>
+          <tr><td>Valore NULL da sostituire</td><td><code>COALESCE(col, 'valore_default')</code></td></tr>
+          <tr><td>Stringa vuota da trasformare in NULL</td><td><code>NULLIF(col, '')</code></td></tr>
+          <tr><td>Escludere NULL e valori anomali insieme</td><td><code>WHERE col IS NOT NULL AND col NOT IN ('-', 'N/A')</code></td></tr>
+          <tr><td>Contare righe nulle per colonna</td><td><code>COUNT(*) FILTER (WHERE col IS NULL)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT: sticky conceptual sections -->
+  <div class="guide-col guide-col-sticky">
+    <div class="guide-sticky-inner">
+      <div class="guide-section guide-section-accent">
+        <h2 class="guide-h2">7. L'ordine reale di esecuzione</h2>
+        <p class="guide-intro">Anche se scrivi le clausole in quest'ordine:</p>
+        <div class="guide-order-row guide-order-written">
+          <span>SELECT</span><span class="guide-order-arrow">→</span>
+          <span>FROM</span><span class="guide-order-arrow">→</span>
+          <span>WHERE</span><span class="guide-order-arrow">→</span>
+          <span>GROUP BY</span><span class="guide-order-arrow">→</span>
+          <span>HAVING</span><span class="guide-order-arrow">→</span>
+          <span>ORDER BY</span><span class="guide-order-arrow">→</span>
+          <span>LIMIT</span>
+        </div>
+        <p class="guide-intro">Il motore le esegue in quest'altro ordine:</p>
+        <div class="guide-order-row guide-order-real">
+          <span>FROM</span><span class="guide-order-arrow">→</span>
+          <span>WHERE</span><span class="guide-order-arrow">→</span>
+          <span>GROUP BY</span><span class="guide-order-arrow">→</span>
+          <span>HAVING</span><span class="guide-order-arrow">→</span>
+          <span class="guide-order-highlight">SELECT*</span><span class="guide-order-arrow">→</span>
+          <span>ORDER BY</span><span class="guide-order-arrow">→</span>
+          <span>LIMIT</span>
+        </div>
+        <p class="guide-footnote">* qui vengono calcolate anche le window function</p>
+        <div class="guide-callout">
+          Questo spiega due cose fondamentali:
+          <ul>
+            <li>Perché non puoi usare un alias creato nel SELECT dentro il WHERE (il WHERE viene eseguito prima che l'alias esista)</li>
+            <li>Perché le window function richiedono una subquery se vuoi filtrarci sopra con WHERE (vengono calcolate nel SELECT, troppo tardi per il WHERE dello stesso livello)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="guide-section guide-section-accent">
+        <h2 class="guide-h2">8. Metodo per una domanda complessa</h2>
+        <ol class="guide-steps">
+          <li><strong>Cosa voglio come risultato finale?</strong> Scrivilo in una frase.</li>
+          <li><strong>Devo comprimere righe</strong> (GROUP BY) <strong>o solo classificarle</strong> senza comprimerle (window function)?</li>
+          <li><strong>Mi serve un valore calcolato per filtrare dopo?</strong> → probabilmente serve una subquery o CTE.</li>
+          <li><strong>Sto unendo dati da più tabelle?</strong> → identifica la colonna in comune per il JOIN.</li>
+        </ol>
+        <div class="guide-callout guide-callout-final">
+          Scrivi prima la query "grezza" senza preoccuparti della perfezione, poi sistema cast, alias e ordine.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   GUIDE VIEW TOGGLE
+   ════════════════════════════════════════════════ */
+function toggleGuideView() {
+  const mainShell = document.getElementById('main-shell');
+  const guideShell = document.getElementById('guide-shell');
+  const btn = document.getElementById('guide-toggle-btn');
+
+  const isGuideOpen = guideShell.style.display !== 'none';
+
+  if (isGuideOpen) {
+    guideShell.style.display = 'none';
+    mainShell.style.display = 'grid';
+    btn.classList.remove('active');
+    btn.querySelector('span').textContent = 'Guida al Ragionamento';
+  } else {
+    guideShell.style.display = 'grid';
+    mainShell.style.display = 'none';
+    btn.classList.add('active');
+    btn.querySelector('span').textContent = '← Torna al tool';
+  }
+}
+
+/* ════════════════════════════════════════════════
+   REFERENCE DATA  (ordine di scrittura)
+   ════════════════════════════════════════════════ */
+const REF = [
+  {
+    id: 'cte', label: 'WITH (CTE)', execOrder: 0,
+    fullExample: `WITH ordini_recenti AS (\n  SELECT cliente_id, COUNT(*) AS num_ordini, SUM(importo) AS totale\n  FROM ordini\n  WHERE stato = 'completato'\n  GROUP BY cliente_id\n),\nclienti_top AS (\n  SELECT c.nome, c.citta, o.num_ordini, o.totale\n  FROM clienti c\n  INNER JOIN ordini_recenti o ON c.id = o.cliente_id\n  WHERE o.totale > 500\n)\nSELECT nome, citta, num_ordini, totale\nFROM clienti_top\nORDER BY totale DESC`,
+    rows: [
+      { op: 'WITH nome AS (...)', desc: 'Crea una sottoquery con un nome riutilizzabile. La CTE viene eseguita prima del SELECT principale e si comporta come una tabella temporanea. Utile per spezzare query complesse in blocchi leggibili.', ex: 'WITH clienti_attivi AS (\n  SELECT id, nome, email, citta\n  FROM clienti\n  WHERE attivo = 1\n)\nSELECT nome, email, citta\nFROM clienti_attivi\nORDER BY nome' },
+      { op: 'WITH multipla', desc: 'Puoi definire più CTE in sequenza separandole con una virgola. Ogni CTE successiva può fare riferimento a quelle definite prima di lei, creando una catena di trasformazioni.', ex: 'WITH spesa_per_cliente AS (\n  SELECT cliente_id, SUM(importo) AS totale\n  FROM ordini\n  WHERE stato = \'completato\'\n  GROUP BY cliente_id\n),\nclienti_top AS (\n  SELECT c.nome, c.citta, s.totale\n  FROM clienti c\n  INNER JOIN spesa_per_cliente s ON c.id = s.cliente_id\n  WHERE s.totale > 500\n)\nSELECT nome, citta, totale\nFROM clienti_top\nORDER BY totale DESC' },
+    ]
+  },
+  {
+    id: 'select', label: 'SELECT', execOrder: 6,
+    fullExample: `SELECT\n  c.nome,\n  UPPER(c.cognome) AS cognome_maiuscolo,\n  c.nome || ' ' || c.cognome AS nome_completo,\n  COALESCE(c.telefono, c.email, 'N/D') AS contatto,\n  CAST(SUBSTR(o.data_ordine, 1, 4) AS INT) AS anno,\n  CAST(o.importo AS INT) AS importo_intero,\n  COUNT(o.id) AS num_ordini,\n  SUM(o.importo) AS fatturato,\n  AVG(o.importo) AS media_ordine,\n  CASE\n    WHEN SUM(o.importo) > 1500 THEN 'Platinum'\n    WHEN SUM(o.importo) > 700 THEN 'Gold'\n    ELSE 'Standard'\n  END AS categoria_cliente\nFROM clienti c\nJOIN ordini o ON c.id = o.cliente_id\nWHERE o.stato = 'completato'\nGROUP BY c.id, c.nome, c.cognome, c.telefono, c.email\nORDER BY fatturato DESC`,
+    rows: [
+      { op: 'SELECT *', desc: 'Restituisce tutte le colonne della tabella. Comodo in fase di esplorazione, ma da evitare in produzione: richiede più memoria, rallenta la query e rende il codice fragile se la struttura della tabella cambia.', ex: 'SELECT *\nFROM clienti\nORDER BY nome' },
+      { op: 'DISTINCT', desc: 'Elimina le righe duplicate dal risultato. Viene applicato dopo SELECT ma prima di ORDER BY. Attenzione: è costoso su grandi tabelle perché il motore deve confrontare ogni riga con tutte le altre.', ex: 'SELECT DISTINCT citta\nFROM clienti\nORDER BY citta' },
+      { op: 'AS', desc: 'Rinomina una colonna o espressione nel risultato. L\'alias è visibile solo a valle: puoi usarlo in ORDER BY ma NON in WHERE o HAVING, perché quei passi avvengono prima che SELECT venga valutato.', ex: 'SELECT\n  nome AS nome_cliente,\n  SUM(importo) AS fatturato_totale\nFROM clienti c\nJOIN ordini o ON c.id = o.cliente_id\nGROUP BY nome\nORDER BY fatturato_totale DESC' },
+      { op: 'COUNT()', desc: 'COUNT(*) conta tutte le righe incluse le NULL. COUNT(colonna) conta solo i valori non NULL di quella colonna. COUNT(DISTINCT colonna) conta i valori unici non NULL.', ex: 'SELECT\n  COUNT(*) AS tot_righe,\n  COUNT(email) AS con_email,\n  COUNT(DISTINCT citta) AS citta_uniche\nFROM clienti' },
+      { op: 'SUM()', desc: 'Somma i valori numerici non NULL di una colonna. Ignorare NULL è un comportamento importante: SUM su una colonna tutta NULL restituisce NULL, non 0.', ex: 'SELECT\n  cliente_id,\n  SUM(importo) AS totale,\n  SUM(CASE WHEN stato = \'completato\' THEN importo ELSE 0 END) AS solo_completati\nFROM ordini\nGROUP BY cliente_id\nORDER BY totale DESC' },
+      { op: 'AVG()', desc: 'Calcola la media aritmetica dei valori non NULL. Attenzione: AVG ignora i NULL, quindi il denominatore è il numero di righe non NULL, non il totale delle righe.', ex: 'SELECT\n  categoria,\n  AVG(importo) AS media_globale,\n  AVG(CASE WHEN stato = \'completato\' THEN importo END) AS media_completati\nFROM ordini\nGROUP BY categoria\nORDER BY media_globale DESC' },
+      { op: 'MIN() / MAX()', desc: 'Trovano rispettivamente il valore minimo e massimo. Funzionano anche su stringhe (ordine alfabetico) e date (cronologico), non solo su numeri.', ex: 'SELECT\n  cliente_id,\n  MIN(data_ordine) AS primo_ordine,\n  MAX(data_ordine) AS ultimo_ordine,\n  MAX(importo) AS ordine_massimo\nFROM ordini\nGROUP BY cliente_id\nORDER BY primo_ordine' },
+      { op: 'LENGTH()', desc: 'Restituisce il numero di caratteri di una stringa. Utile per validare lunghezze (es. codici fiscali, CAP) o per trovare valori anomali.', ex: 'SELECT nome, LENGTH(nome) AS lunghezza\nFROM clienti\nORDER BY lunghezza ASC' },
+      { op: 'SUBSTR() [LEFT/RIGHT]', desc: 'In SQLite non esistono LEFT() e RIGHT() — si usa SUBSTR(stringa, posizione, lunghezza). Posizione 1 = inizio stringa. Per replicare RIGHT usa SUBSTR(str, -n) oppure calcola la posizione con LENGTH.', ex: 'SELECT\n  nome,\n  SUBSTR(nome, 1, 3) AS prime_3_lettere,\n  SUBSTR(email, -6) AS ultime_6_email\nFROM clienti\nORDER BY nome' },
+      { op: 'POSITION() / INSTR()', desc: 'Restituisce la posizione (da 1) della prima occorrenza di una sottostringa. Restituisce 0 se non trovata. In SQLite usa INSTR(stringa, sottostringa) — POSITION() non è supportato. Spesso combinato con SUBSTR per estrarre parti variabili.', ex: "SELECT\n  email,\n  INSTR(email, '@') AS pos_chiocciola\nFROM clienti\nORDER BY pos_chiocciola" },
+      { op: 'UPPER() / LOWER()', desc: 'Convertono una stringa rispettivamente in maiuscolo e minuscolo. Utili per normalizzare i dati prima di confronti o esportazioni.', ex: 'SELECT\n  UPPER(nome) AS nome_upper,\n  LOWER(email) AS email_lower\nFROM clienti\nORDER BY nome' },
+      { op: 'CONCAT()', desc: 'Unisce due o più stringhe in sequenza. Se uno dei valori è NULL, il risultato è NULL. Per gestire i NULL usa CONCAT_WS oppure COALESCE sui singoli campi.', ex: "SELECT\n  nome || ' ' || cognome || ' (' || citta || ')' AS descrizione\nFROM clienti\nORDER BY cognome" },
+      { op: 'CONCAT_WS()', desc: 'Come CONCAT ma il primo argomento è il separatore da inserire tra i valori. Ignora automaticamente i valori NULL (a differenza di CONCAT).', ex: "SELECT\n  nome || ' | ' || cognome || ' | ' || citta AS etichetta\nFROM clienti\nORDER BY cognome" },
+      { op: 'CAST()', desc: 'Converte esplicitamente un valore in un altro tipo di dato. Utile quando si uniscono colonne di tipo diverso o si vuole controllare la precisione numerica.', ex: "SELECT\n  id,\n  importo,\n  CAST(importo AS INT) AS importo_intero\nFROM ordini\nORDER BY importo_intero DESC" },
+      { op: 'COALESCE()', desc: 'Valuta gli argomenti da sinistra a destra e restituisce il primo valore non NULL. È la funzione preferita per gestire valori mancanti con un fallback.', ex: "SELECT\n  nome,\n  COALESCE(telefono, email, 'nessun contatto') AS contatto\nFROM clienti\nORDER BY nome" },
+      { op: 'SUBSTR() su date [SQLite]', desc: 'SQLite non ha EXTRACT(). Per estrarre anno, mese e giorno da una data TEXT (formato YYYY-MM-DD) si usa SUBSTR(). Esempio: SUBSTR(data, 1, 4) = anno, SUBSTR(data, 6, 2) = mese, SUBSTR(data, 9, 2) = giorno.', ex: 'SELECT\n  SUBSTR(data_ordine, 1, 4) AS anno,\n  SUBSTR(data_ordine, 6, 2) AS mese,\n  SUBSTR(data_ordine, 9, 2) AS giorno,\n  COUNT(*) AS num_ordini\nFROM ordini\nGROUP BY anno, mese\nORDER BY anno, mese' },
+      { op: 'EXTRACT() [standard SQL]', desc: 'Negli altri database (PostgreSQL, MySQL, BigQuery) si usa EXTRACT(parte FROM data). Parti disponibili: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DOW (giorno settimana), WEEK. Non funziona in SQLite ma è lo standard SQL che troverai nel mondo reale.', ex: '-- Funziona in PostgreSQL / MySQL / BigQuery:\nSELECT\n  EXTRACT(YEAR FROM data_ordine) AS anno,\n  EXTRACT(MONTH FROM data_ordine) AS mese,\n  COUNT(*) AS num_ordini\nFROM ordini\nGROUP BY anno, mese\nORDER BY anno, mese' },
+      { op: 'CASE WHEN', desc: 'Implementa logica condizionale if/else all\'interno di una query. Può essere usato ovunque sia ammessa un\'espressione: SELECT, WHERE, ORDER BY, GROUP BY. La clausola ELSE è opzionale: se omessa e nessuna condizione è vera, restituisce NULL.', ex: "SELECT\n  c.nome,\n  o.importo,\n  CASE\n    WHEN o.importo > 1000 THEN 'Alto'\n    WHEN o.importo > 500  THEN 'Medio'\n    ELSE 'Basso'\n  END AS fascia\nFROM clienti c\nJOIN ordini o ON c.id = o.cliente_id\nORDER BY o.importo DESC" },
+    ]
+  },
+  {
+    id: 'window', label: 'WINDOW functions', execOrder: 5,
+    fullExample: `SELECT\n  c.nome,\n  c.citta,\n  o.importo,\n  ROW_NUMBER() OVER (PARTITION BY c.citta ORDER BY o.importo DESC) AS row_num,\n  RANK() OVER (PARTITION BY c.citta ORDER BY o.importo DESC) AS rank_con_salti,\n  DENSE_RANK() OVER (PARTITION BY c.citta ORDER BY o.importo DESC) AS rank_senza_salti,\n  SUM(o.importo) OVER (PARTITION BY c.citta) AS totale_citta,\n  AVG(o.importo) OVER (PARTITION BY c.citta) AS media_citta,\n  LAG(o.importo, 1) OVER (PARTITION BY c.citta ORDER BY o.importo DESC) AS importo_precedente,\n  LEAD(o.importo, 1) OVER (PARTITION BY c.citta ORDER BY o.importo DESC) AS importo_successivo\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nWHERE o.stato = 'completato'\nORDER BY c.citta, row_num`,
+    rows: [
+      { op: 'ROW_NUMBER()', desc: 'Assegna un numero progressivo univoco a ogni riga all\'interno della finestra. Non ci sono mai parità: se due righe hanno lo stesso valore, l\'ordine tra loro è arbitrario ma i numeri restano distinti (1, 2, 3…). Utile per prendere "la prima riga per ogni gruppo".', ex: 'SELECT\n  c.nome,\n  o.importo,\n  ROW_NUMBER() OVER (PARTITION BY c.citta ORDER BY o.importo DESC) AS rn\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nWHERE o.stato = \'completato\'\nORDER BY c.citta, rn' },
+      { op: 'RANK()', desc: 'Come ROW_NUMBER ma in caso di parità assegna lo stesso rango e poi salta i numeri successivi. Es: 1, 1, 3 (il 2 viene saltato). Riflette una classifica "sportiva".', ex: 'SELECT\n  c.nome,\n  SUM(o.importo) AS totale,\n  RANK() OVER (ORDER BY SUM(o.importo) DESC) AS posizione\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nGROUP BY c.nome\nORDER BY posizione' },
+      { op: 'DENSE_RANK()', desc: 'Come RANK ma senza salti: in caso di parità assegna lo stesso rango e il successivo è consecutivo. Es: 1, 1, 2. Da preferire quando vuoi mantenere una sequenza compatta.', ex: 'SELECT\n  c.nome,\n  SUM(o.importo) AS totale,\n  DENSE_RANK() OVER (ORDER BY SUM(o.importo) DESC) AS posizione\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nGROUP BY c.nome\nORDER BY posizione' },
+      { op: 'PARTITION BY', desc: 'Divide il dataset in gruppi indipendenti su cui la window function opera separatamente. È come un GROUP BY che non collassa le righe: ogni riga mantiene la propria identità e riceve il risultato calcolato sul proprio gruppo.', ex: 'SELECT\n  c.nome,\n  c.citta,\n  o.importo,\n  AVG(o.importo) OVER (PARTITION BY c.citta) AS media_citta\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nWHERE o.stato = \'completato\'\nORDER BY c.citta, o.importo DESC' },
+      { op: 'ORDER BY in OVER()', desc: 'Definisce l\'ordine di elaborazione all\'interno della finestra. Con SUM o AVG crea un totale cumulativo (running total): ogni riga somma tutti i valori fino a sé stessa nell\'ordine definito.', ex: 'SELECT\n  data_ordine,\n  importo,\n  SUM(importo) OVER (ORDER BY data_ordine) AS totale_cumulativo\nFROM ordini\nWHERE stato = \'completato\'\nORDER BY data_ordine' },
+      { op: 'LAG(col, n)', desc: 'Accede al valore della riga che si trova n posizioni PRIMA nell\'ordine della finestra. Se non esiste (prima riga), restituisce NULL (o un valore di default opzionale come terzo argomento). Utile per confronti con il periodo precedente.', ex: 'SELECT\n  data_ordine,\n  importo,\n  LAG(importo, 1) OVER (ORDER BY data_ordine) AS importo_precedente,\n  importo - LAG(importo, 1) OVER (ORDER BY data_ordine) AS variazione\nFROM ordini\nWHERE stato = \'completato\'\nORDER BY data_ordine' },
+      { op: 'LEAD(col, n)', desc: 'Come LAG ma accede alla riga n posizioni DOPO. Utile per confrontare ogni riga con quella successiva, ad esempio per calcolare quanto manca alla prossima scadenza.', ex: 'SELECT\n  data_ordine,\n  importo,\n  LEAD(data_ordine, 1) OVER (ORDER BY data_ordine) AS prossimo_ordine\nFROM ordini\nWHERE stato = \'completato\'\nORDER BY data_ordine' },
+    ]
+  },
+  {
+    id: 'from', label: 'FROM', execOrder: 1,
+    fullExample: `SELECT c.nome, c.citta, o.importo, p.nome AS prodotto, p.categoria\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nINNER JOIN prodotti p ON o.prodotto_id = p.id\nWHERE c.attivo = 1\n  AND o.stato = 'completato'\nORDER BY o.importo DESC`,
+    rows: [
+      { op: 'FROM tabella', desc: 'Punto di partenza obbligatorio di ogni query: specifica la tabella sorgente da cui il motore inizia a leggere i dati. Tutto il resto della query (filtri, aggregazioni, ordinamenti) opera sul dataset prodotto da FROM.', ex: 'SELECT id, nome, email\nFROM clienti\nORDER BY nome' },
+      { op: 'FROM alias', desc: 'Assegna un nome abbreviato alla tabella. Obbligatorio quando la stessa tabella appare più volte nella stessa query (self-join). Rende il codice più leggibile evitando di ripetere nomi lunghi.', ex: 'SELECT c.nome, c.email, c.citta\nFROM clienti c\nWHERE c.citta = \'Roma\'\nORDER BY c.nome' },
+      { op: 'FROM subquery', desc: 'Usa il risultato di un\'altra query come tabella di partenza. Deve avere sempre un alias. Utile per fare aggregazioni a più livelli (es. media delle medie per gruppo). Le CTE (WITH) sono spesso preferibili per leggibilità.', ex: 'SELECT citta, AVG(media_imp) AS media_medie\nFROM (\n  SELECT c.citta, AVG(o.importo) AS media_imp\n  FROM clienti c\n  INNER JOIN ordini o ON c.id = o.cliente_id\n  WHERE o.stato = \'completato\'\n  GROUP BY c.citta\n) AS medie_per_citta\nGROUP BY citta\nORDER BY media_medie DESC' },
+    ]
+  },
+  {
+    id: 'join', label: 'JOIN', execOrder: 1,
+    fullExample: `SELECT\n  c.nome AS cliente,\n  c.citta,\n  COUNT(o.id) AS num_ordini,\n  SUM(o.importo) AS totale,\n  MAX(o.importo) AS ordine_max,\n  p.nome AS prodotto_preferito\nFROM clienti c\nLEFT JOIN ordini o ON c.id = o.cliente_id\nINNER JOIN prodotti p ON o.prodotto_id = p.id\nWHERE c.attivo = 1\n  AND o.stato = 'completato'\nGROUP BY c.id, c.nome, c.citta, p.nome\nHAVING COUNT(o.id) > 0\nORDER BY totale DESC`,
+    rows: [
+      { op: 'INNER JOIN', desc: 'Restituisce solo le righe che hanno una corrispondenza in ENTRAMBE le tabelle. Le righe senza corrispondenza vengono scartate da entrambi i lati. È il JOIN più usato e il più performante.', ex: 'SELECT c.nome, c.email, o.importo, o.data_ordine\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nORDER BY o.data_ordine DESC' },
+      { op: 'LEFT JOIN', desc: 'Restituisce TUTTE le righe della tabella di sinistra (quella nel FROM), più le corrispondenze dalla destra. Se non c\'è corrispondenza a destra, le colonne della tabella destra valgono NULL. Usato per trovare "cosa manca" (es. clienti senza ordini).', ex: 'SELECT c.nome, c.email, COUNT(o.id) AS num_ordini\nFROM clienti c\nLEFT JOIN ordini o ON c.id = o.cliente_id\nGROUP BY c.id, c.nome, c.email\nORDER BY num_ordini ASC' },
+      { op: 'RIGHT JOIN', desc: 'Speculare al LEFT JOIN: restituisce tutte le righe della tabella destra e le corrispondenze dalla sinistra. Raramente usato — di solito si preferisce invertire l\'ordine delle tabelle e usare LEFT JOIN per coerenza.', ex: 'SELECT c.nome, c.email, o.importo\nFROM ordini o\nRIGHT JOIN clienti c ON o.cliente_id = c.id\nORDER BY c.nome' },
+      { op: 'FULL OUTER JOIN', desc: 'Restituisce TUTTE le righe di entrambe le tabelle. Dove non c\'è corrispondenza, le colonne dell\'altra tabella valgono NULL. Utile per confrontare due dataset e trovare differenze.', ex: '-- SQLite non supporta FULL OUTER JOIN nativamente.\n-- Equivalente con LEFT JOIN + UNION:\nSELECT c.id, c.nome, o.id AS ordine_id, o.importo\nFROM clienti c\nLEFT JOIN ordini o ON c.id = o.cliente_id\nORDER BY c.id' },
+      { op: 'CROSS JOIN', desc: 'Produce il prodotto cartesiano: ogni riga della prima tabella combinata con ogni riga della seconda. Se A ha 10 righe e B ha 5, il risultato ha 50 righe. Usare con cautela su tabelle grandi.', ex: 'SELECT p.nome AS prodotto, c.nome AS categoria_cliente\nFROM prodotti p\nCROSS JOIN categorie c\nORDER BY p.nome, c.nome' },
+      { op: 'ON', desc: 'Specifica la condizione di collegamento tra le due tabelle. Può contenere qualsiasi espressione booleana, non solo uguaglianze: puoi unire su range, su più colonne con AND, su espressioni calcolate.', ex: 'SELECT c.nome, o.importo, o.data_ordine\nFROM clienti c\nINNER JOIN ordini o\n  ON c.id = o.cliente_id\n  AND o.data_ordine >= c.data_iscrizione\nORDER BY o.data_ordine DESC' },
+      { op: 'USING(col)', desc: 'Alternativa a ON quando le due colonne di collegamento hanno lo stesso nome in entrambe le tabelle. Più compatto, ma meno flessibile di ON. Nel nostro schema clienti.id ≠ ordini.cliente_id, quindi si deve usare ON. USING funzionerebbe se entrambe le tabelle avessero una colonna chiamata esattamente allo stesso modo.', ex: '-- USING non funziona qui perché clienti ha "id"\n-- e ordini ha "cliente_id" (nomi diversi).\n-- Si usa ON:\nSELECT c.nome, o.importo, o.data_ordine\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nORDER BY o.data_ordine DESC' },
+    ]
+  },
+  {
+    id: 'where', label: 'WHERE', execOrder: 2,
+    fullExample: `SELECT c.nome, c.email, c.citta, o.importo\nFROM clienti c\nINNER JOIN ordini o ON c.id = o.cliente_id\nWHERE c.attivo = 1\n  AND c.eta BETWEEN 25 AND 55\n  AND c.citta IN ('Roma', 'Milano', 'Napoli')\n  AND c.email IS NOT NULL\n  AND c.nome LIKE 'M%'\n  AND o.importo > 100\n  AND EXISTS (\n    SELECT 1 FROM ordini o2\n    WHERE o2.cliente_id = c.id AND o2.stato = 'completato'\n  )\nORDER BY o.importo DESC`,
+    rows: [
+      { op: '= / <> / > / < / >= / <=', desc: 'Operatori di confronto base. <> è equivalente a != (non uguale). Funzionano con numeri, stringhe e date. Attenzione: il confronto con NULL richiede IS NULL / IS NOT NULL, non = NULL (che non funziona mai).', ex: "SELECT id, nome, prezzo, stock\nFROM prodotti\nWHERE prezzo > 100\n  AND stock > 0\nORDER BY prezzo DESC" },
+      { op: 'AND / OR / NOT', desc: 'AND richiede che tutte le condizioni siano vere. OR richiede che almeno una sia vera. NOT nega la condizione seguente. Usa sempre le parentesi con OR per evitare ambiguità: AND ha precedenza su OR.', ex: "SELECT nome, citta, eta\nFROM clienti\nWHERE (citta = 'Roma' OR citta = 'Milano')\n  AND eta >= 25\n  AND NOT attivo = 0\nORDER BY nome" },
+      { op: 'IN (...)', desc: 'Abbreviazione elegante per una serie di condizioni OR su uguaglianza. Funziona anche con subquery: WHERE id IN (SELECT id FROM ...). Più leggibile e spesso più efficiente di molti OR concatenati.', ex: "SELECT nome, citta\nFROM clienti\nWHERE citta IN ('Roma', 'Milano', 'Napoli')\nORDER BY citta, nome" },
+      { op: 'BETWEEN a AND b', desc: 'Controlla se un valore è nell\'intervallo [a, b] inclusi. Equivalente a col >= a AND col <= b. Funziona con numeri, date e stringhe. Attenzione alle date: BETWEEN \'2024-01-01\' AND \'2024-01-31\' include solo fino alle 00:00:00 del 31.', ex: "SELECT id, importo, data_ordine, stato\nFROM ordini\nWHERE importo BETWEEN 100 AND 500\n  AND data_ordine BETWEEN '2024-01-01' AND '2024-12-31'\nORDER BY data_ordine" },
+      { op: 'LIKE', desc: '% corrisponde a zero o più caratteri qualsiasi. _ corrisponde esattamente a un carattere. Sensibile alle maiuscole in alcuni database (MySQL no, PostgreSQL sì). Per ricerche case-insensitive usa ILIKE (PostgreSQL) o LOWER(col) LIKE \'%...\'.', ex: "SELECT nome, cognome, email\nFROM clienti\nWHERE nome LIKE 'A%'\nORDER BY nome" },
+      { op: 'IS NULL / IS NOT NULL', desc: 'L\'unico modo corretto per confrontare con NULL. NULL rappresenta un valore sconosciuto o assente — non è uguale a niente, neanche a se stesso. Scrivere col = NULL restituisce sempre false (o NULL), non le righe NULL.', ex: 'SELECT nome, telefono, email\nFROM clienti\nWHERE telefono IS NULL\n  AND email IS NOT NULL\nORDER BY nome' },
+      { op: 'EXISTS (...)', desc: 'Verifica se la subquery restituisce almeno una riga. Più efficiente di IN con subquery quando la tabella interna è grande, perché si ferma alla prima corrispondenza trovata (short-circuit).', ex: 'SELECT c.nome, c.email\nFROM clienti c\nWHERE EXISTS (\n  SELECT 1\n  FROM ordini o\n  WHERE o.cliente_id = c.id\n    AND o.importo > 500\n)\nORDER BY c.nome' },
+    ]
+  },
+  {
+    id: 'groupby', label: 'GROUP BY', execOrder: 3,
+    fullExample: `SELECT\n  SUBSTR(data_ordine, 1, 4) AS anno,\n  SUBSTR(data_ordine, 6, 2) AS mese,\n  categoria,\n  COUNT(*) AS num_ordini,\n  COUNT(DISTINCT cliente_id) AS clienti_unici,\n  SUM(importo) AS fatturato,\n  AVG(importo) AS media_ordine,\n  MIN(importo) AS ordine_minimo,\n  MAX(importo) AS ordine_massimo\nFROM ordini\nWHERE stato = 'completato'\nGROUP BY anno, mese, categoria\nHAVING COUNT(*) >= 2\nORDER BY anno, mese, fatturato DESC`,
+    rows: [
+      { op: 'GROUP BY colonna', desc: 'Raggruppa tutte le righe con lo stesso valore nella colonna indicata, riducendole a una sola riga per gruppo. È obbligatorio quando usi funzioni aggregate (COUNT, SUM, AVG…): tutte le colonne nel SELECT che non sono aggregate devono comparire nel GROUP BY.', ex: 'SELECT citta, COUNT(*) AS num_clienti\nFROM clienti\nGROUP BY citta\nORDER BY num_clienti DESC' },
+      { op: 'GROUP BY più colonne', desc: 'Crea un gruppo per ogni combinazione unica dei valori nelle colonne indicate. L\'ordine delle colonne non cambia il raggruppamento, ma può influenzare la leggibilità. Puoi usare anche espressioni o alias definiti nel SELECT in alcuni database.', ex: 'SELECT\n  SUBSTR(data_ordine, 1, 4) AS anno,\n  categoria,\n  SUM(importo) AS fatturato,\n  COUNT(*) AS num_ordini\nFROM ordini\nGROUP BY anno, categoria\nORDER BY anno, fatturato DESC' },
+    ]
+  },
+  {
+    id: 'having', label: 'HAVING', execOrder: 4,
+    fullExample: `SELECT\n  cliente_id,\n  COUNT(*) AS num_ordini,\n  SUM(importo) AS fatturato_totale,\n  AVG(importo) AS media_ordine\nFROM ordini\nWHERE stato = 'completato'\nGROUP BY cliente_id\nHAVING COUNT(*) >= 3\n  AND SUM(importo) > 500\n  AND AVG(importo) > 100\nORDER BY fatturato_totale DESC`,
+    rows: [
+      { op: 'HAVING con aggregato', desc: 'HAVING filtra i GRUPPI prodotti da GROUP BY, non le righe singole. Viene eseguito DOPO l\'aggregazione, quindi può usare funzioni aggregate nella condizione. Pensa a HAVING come il WHERE dei gruppi: WHERE filtra righe prima del raggruppamento, HAVING filtra gruppi dopo.', ex: 'SELECT cliente_id, COUNT(*) AS num_ordini, SUM(importo) AS totale\nFROM ordini\nGROUP BY cliente_id\nHAVING COUNT(*) >= 3\nORDER BY totale DESC' },
+      { op: 'HAVING COUNT()', desc: 'Filtra gruppi in base al numero di righe nel gruppo. Molto usato per trovare duplicati, clienti frequenti, prodotti con poche recensioni, ecc.', ex: 'SELECT citta, COUNT(*) AS num_clienti\nFROM clienti\nGROUP BY citta\nHAVING COUNT(*) > 1\nORDER BY num_clienti DESC' },
+      { op: 'HAVING SUM()', desc: 'Filtra gruppi in base alla somma di una colonna nel gruppo. Utile per trovare clienti sopra una soglia di fatturato, categorie sopra un budget, ecc.', ex: 'SELECT cliente_id, SUM(importo) AS totale\nFROM ordini\nGROUP BY cliente_id\nHAVING SUM(importo) > 1000\nORDER BY totale DESC' },
+      { op: 'HAVING AVG()', desc: 'Filtra gruppi in base alla media. Combinabile con altre condizioni HAVING tramite AND/OR.', ex: 'SELECT categoria, AVG(prezzo) AS media, COUNT(*) AS num_prodotti\nFROM prodotti\nGROUP BY categoria\nHAVING AVG(prezzo) BETWEEN 10 AND 100\nORDER BY media DESC' },
+    ]
+  },
+  {
+    id: 'orderby', label: 'ORDER BY', execOrder: 7,
+    fullExample: `SELECT\n  c.nome,\n  c.citta,\n  SUM(o.importo) AS fatturato\nFROM clienti c\nJOIN ordini o ON c.id = o.cliente_id\nWHERE o.stato = 'completato'\nGROUP BY c.nome, c.citta\nORDER BY\n  fatturato DESC,\n  citta ASC,\n  nome ASC\nLIMIT 20`,
+    rows: [
+      { op: 'ORDER BY ASC', desc: 'Ordina il risultato in modo crescente: numeri dal più piccolo al più grande, stringhe dalla A alla Z, date dalla più vecchia alla più recente. ASC è il default e può essere omesso. ORDER BY viene eseguito DOPO SELECT, quindi può usare gli alias definiti in SELECT.', ex: 'SELECT nome, email, data_iscrizione\nFROM clienti\nORDER BY data_iscrizione ASC' },
+      { op: 'ORDER BY DESC', desc: 'Ordina in modo decrescente: numeri dal più grande, stringhe dalla Z alla A, date dalla più recente. Da usare quando vuoi i "top N" (es. i 10 clienti col fatturato più alto).', ex: 'SELECT c.nome, SUM(o.importo) AS fatturato\nFROM clienti c\nJOIN ordini o ON c.id = o.cliente_id\nGROUP BY c.nome\nORDER BY fatturato DESC\nLIMIT 10' },
+      { op: 'ORDER BY più colonne', desc: 'Ordina prima per la prima colonna, poi a parità di valore ordina per la seconda, e così via. Ogni colonna può avere la propria direzione (ASC o DESC) indipendentemente.', ex: 'SELECT cognome, nome, citta, data_iscrizione\nFROM clienti\nORDER BY\n  cognome ASC,\n  nome ASC,\n  data_iscrizione DESC' },
+    ]
+  },
+  {
+    id: 'limit', label: 'LIMIT / OFFSET', execOrder: 8,
+    fullExample: `-- Paginazione: pagina 3, 10 risultati per pagina
+SELECT id, cliente_id, importo, data_ordine, stato
+FROM ordini
+ORDER BY importo DESC
+LIMIT 10 OFFSET 5
+-- OFFSET = (numero_pagina - 1) * righe_per_pagina
+-- Pagina 1: LIMIT 10 OFFSET 0
+-- Pagina 2: LIMIT 10 OFFSET 5
+-- Pagina 3: LIMIT 10 OFFSET 10`,
+    rows: [
+      { op: 'LIMIT n', desc: 'Restituisce al massimo n righe. Viene applicato per ULTIMO, dopo ORDER BY — quindi limita il risultato già ordinato. Essenziale per la paginazione e per evitare di caricare tabelle enormi in memoria.', ex: 'SELECT id, cliente_id, importo, stato\nFROM ordini\nORDER BY importo DESC\nLIMIT 5' },
+      { op: 'LIMIT n OFFSET m', desc: 'Salta le prime m righe e poi restituisce n righe. La base della paginazione: OFFSET = (pagina - 1) × n. Attenzione: OFFSET grandi su tabelle enormi sono lenti perché il motore deve comunque leggere e scartare le prime m righe.', ex: 'SELECT id, cliente_id, importo, data_ordine\nFROM ordini\nORDER BY data_ordine DESC\nLIMIT 10 OFFSET 5' },
+    ]
+  },
+  {
+    id: 'union', label: 'UNION', execOrder: null,
+    fullExample: null,
+    rows: [
+      { op: 'UNION', desc: 'Unisce i risultati di due SELECT rimuovendo i duplicati. Le due query devono avere lo stesso numero di colonne con tipi compatibili. I nomi delle colonne nel risultato finale sono quelli della prima SELECT. ORDER BY si applica all\'intero risultato finale, non alle singole query.', ex: "SELECT nome, email, 'attivo' AS tipo FROM clienti WHERE attivo = 1\nUNION\nSELECT nome, email, 'non attivo' AS tipo FROM clienti WHERE attivo = 0\nORDER BY nome" },
+      { op: 'UNION ALL', desc: 'Come UNION ma mantiene tutti i duplicati. Molto più veloce di UNION perché non deve fare il confronto per eliminare i duplicati. Da preferire quando sai già che non ci sono duplicati o quando i duplicati sono desiderati.', ex: "SELECT nome, categoria, 'Gold+' AS gruppo FROM clienti WHERE categoria IN ('Gold','Platinum')\nUNION ALL\nSELECT nome, categoria, 'Standard' AS gruppo FROM clienti WHERE categoria = 'Standard'\nORDER BY nome" },
+    ]
+  },
+  {
+    id: 'dml', label: 'INSERT / UPDATE / DELETE', execOrder: null, noTry: true,
+    fullExample: null,
+    rows: [
+      { op: 'INSERT INTO ... VALUES', desc: 'Inserisce una o più righe specificando i valori direttamente. Le colonne non elencate ricevono il valore DEFAULT (o NULL se non definito). Puoi inserire più righe in un\'unica istruzione separando i gruppi di valori con virgola.', ex: "INSERT INTO clienti (nome, email, citta)\nVALUES\n  ('Mario Rossi', 'mario@email.it', 'Roma'),\n  ('Laura Bianchi', 'laura@email.it', 'Milano')" },
+      { op: 'INSERT ... SELECT', desc: 'Inserisce righe prese da una query SELECT. Utile per copiare dati tra tabelle, archiviare record storici, popolare tabelle di staging. La struttura delle colonne selezionate deve corrispondere a quelle della tabella di destinazione.', ex: '-- Esempio: copia clienti non attivi in una tabella archivio\n-- (richiede che archivio_clienti esista già)\nINSERT INTO archivio_clienti (id, nome, email, citta)\nSELECT id, nome, email, citta\nFROM clienti\nWHERE attivo = 0' },
+      { op: 'UPDATE ... SET', desc: 'Aggiorna i valori di una o più colonne nelle righe filtrate dal WHERE. ATTENZIONE: senza WHERE aggiorna TUTTE le righe della tabella. Sempre testare prima con un SELECT usando la stessa condizione WHERE.', ex: "UPDATE prodotti\nSET prezzo = prezzo * 1.10\nWHERE categoria = 'elettronica'\n-- +10% su tutti i prodotti elettronica" },
+      { op: 'DELETE FROM ... WHERE', desc: 'Elimina le righe filtrate dal WHERE. ATTENZIONE: senza WHERE elimina TUTTE le righe (ma mantiene la struttura della tabella, a differenza di TRUNCATE). Operazione irreversibile: usare con cautela e sempre dentro una transazione.', ex: 'DELETE FROM ordini\nWHERE stato = \'annullato\'\n  AND data_ordine < \'2024-01-01\'\n-- Elimina ordini annullati prima del 2024' },
+    ]
+  },
+  {
+    id: 'ddl', label: 'CREATE / ALTER / DROP', execOrder: null, noTry: true,
+    fullExample: null,
+    rows: [
+      { op: 'CREATE TABLE', desc: 'Crea una nuova tabella definendo le colonne con il loro tipo di dato, i vincoli (NOT NULL, DEFAULT, PRIMARY KEY, FOREIGN KEY, UNIQUE) e gli indici. La struttura è fissa dopo la creazione — per modificarla si usa ALTER TABLE.', ex: 'CREATE TABLE prodotti (\n  id       INT PRIMARY KEY AUTO_INCREMENT,\n  nome     VARCHAR(100) NOT NULL,\n  prezzo   DECIMAL(8,2) DEFAULT 0,\n  attivo   BOOLEAN DEFAULT TRUE\n)' },
+      { op: 'ALTER TABLE ADD COLUMN', desc: 'Aggiunge una o più colonne a una tabella esistente. La nuova colonna viene aggiunta in fondo (in alcuni DB puoi specificare la posizione con AFTER). Le righe esistenti ricevono il valore DEFAULT o NULL.', ex: 'ALTER TABLE clienti\n  ADD COLUMN note TEXT,\n  ADD COLUMN punteggio INTEGER DEFAULT 0' },
+      { op: 'ALTER TABLE RENAME', desc: 'Rinomina una tabella o (con RENAME COLUMN) una colonna. Non sposta i dati. Attenzione alle dipendenze: viste, procedure e applicazioni che usano il vecchio nome smettono di funzionare.', ex: 'ALTER TABLE clienti_old\n  RENAME TO clienti;\n\n-- Rinomina colonna (sintassi varia per DB):\nALTER TABLE clienti\n  RENAME COLUMN nome TO nome_cliente' },
+      { op: 'DROP TABLE', desc: 'Elimina la tabella e tutti i suoi dati in modo permanente e irreversibile. IF EXISTS evita errori se la tabella non esiste. Se ci sono FOREIGN KEY che puntano alla tabella, l\'operazione fallisce (devi prima eliminare i vincoli o le tabelle dipendenti).', ex: 'DROP TABLE IF EXISTS sessioni_temp;\n-- IF EXISTS: non dà errore se la tabella non esiste' },
+    ]
+  },
+];
+
+/* ════════════════════════════════════════════════
+   EXECUTION STEPS (ordine motore SQL)
+   ════════════════════════════════════════════════ */
+const EXEC_STEPS = [
+  {
+    id: 'cte',
+    label: 'WITH (CTE)',
+    kw: 'WITH',
+    keywords: [/^\s*WITH\b/i],
+    extractFn: (sql) => getClause(sql, 'cte'),
+    desc: 'Le CTE vengono valutate per prime e creano result set temporanei riutilizzabili nella query principale. Ogni CTE è come una tabella virtuale con un nome.',
+    tip: null
+  },
+  {
+    id: 'from',
+    label: 'FROM / JOIN',
+    kw: 'FROM',
+    keywords: [/\bFROM\b/i, /\bJOIN\b/i],
+    extractFn: (sql) => getClause(sql, 'from'),
+    desc: 'Il motore identifica le tabelle sorgente e combina le righe tramite JOIN formando il dataset iniziale. Tutto il resto opera su questo risultato.',
+    tip: null
+  },
+  {
+    id: 'where',
+    label: 'WHERE',
+    kw: 'WHERE',
+    keywords: [/\bWHERE\b/i],
+    extractFn: (sql) => getClause(sql, 'where'),
+    desc: 'Filtra le righe del dataset prodotto da FROM/JOIN. Agisce prima del raggruppamento: non puoi usare funzioni aggregate qui.',
+    tip: '⚠ WHERE viene eseguito PRIMA di GROUP BY: non puoi scrivere WHERE COUNT(*) > 5. Usa HAVING per filtrare i gruppi.'
+  },
+  {
+    id: 'groupby',
+    label: 'GROUP BY',
+    kw: 'GROUP BY',
+    keywords: [/\bGROUP\s+BY\b/i],
+    extractFn: (sql) => getClause(sql, 'groupby'),
+    desc: 'Raggruppa le righe con lo stesso valore nelle colonne indicate. Ogni gruppo diventa una singola riga. Richiesto quando usi COUNT, SUM, AVG, MIN, MAX.',
+    tip: null
+  },
+  {
+    id: 'having',
+    label: 'HAVING',
+    kw: 'HAVING',
+    keywords: [/\bHAVING\b/i],
+    extractFn: (sql) => getClause(sql, 'having'),
+    desc: 'Filtra i gruppi (non le singole righe). Viene eseguito dopo GROUP BY, quindi puoi usare funzioni aggregate nella condizione.',
+    tip: '💡 HAVING sta a GROUP BY come WHERE sta a FROM: filtra dopo il raggruppamento.'
+  },
+  {
+    id: 'window',
+    label: 'Window functions',
+    kw: 'OVER()',
+    keywords: [/\bOVER\s*\(/i, /\bROW_NUMBER\b/i, /\bRANK\b/i, /\bDENSE_RANK\b/i, /\bLAG\b/i, /\bLEAD\b/i, /\bPARTITION\s+BY\b/i],
+    extractFn: (sql) => extractWindowFunctions(sql),
+    desc: 'Le window functions vengono calcolate dopo HAVING ma prima che SELECT produca il risultato finale. Non collassano le righe: ogni riga mantiene la sua identità.',
+    tip: null
+  },
+  {
+    id: 'select',
+    label: 'SELECT',
+    kw: 'SELECT',
+    keywords: [/\bSELECT\b/i],
+    extractFn: (sql) => getClause(sql, 'select'),
+    desc: 'Solo ora vengono valutate le espressioni nella lista SELECT: colonne, calcoli, alias. Gli alias definiti qui non sono disponibili in WHERE o HAVING.',
+    tip: '⚠ Un alias definito in SELECT non è usabile in WHERE o HAVING perché quei passi avvengono prima.'
+  },
+  {
+    id: 'orderby',
+    label: 'ORDER BY',
+    kw: 'ORDER BY',
+    keywords: [/\bORDER\s+BY\b/i],
+    extractFn: (sql) => getClause(sql, 'orderby'),
+    desc: 'Ordina il risultato finale. Può usare alias definiti in SELECT — a differenza di WHERE e HAVING — perché viene eseguito dopo.',
+    tip: null
+  },
+  {
+    id: 'limit',
+    label: 'LIMIT / OFFSET',
+    kw: 'LIMIT',
+    keywords: [/\bLIMIT\b/i, /\bOFFSET\b/i],
+    extractFn: (sql) => getClause(sql, 'limit'),
+    desc: 'Limita il numero di righe restituite. Viene applicato per ultimo, dopo l\'ordinamento.',
+    tip: null
+  },
+];
+
+/* ════════════════════════════════════════════════
+   EXTRACT HELPERS — paren-aware SQL splitter
+   Tracks parenthesis depth so keywords inside CTEs
+   or subqueries are ignored. Only depth-0 keywords
+   are treated as top-level clause boundaries.
+   ════════════════════════════════════════════════ */
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/**
+ * Tokenise sql into an array of {pos, kw} for every top-level
+ * (depth-0) keyword match of the given regex.
+ */
+function topLevelMatches(sql, re) {
+  const hits = [];
+  let depth = 0;
+  let i = 0;
+  while (i < sql.length) {
+    const ch = sql[i];
+    if (ch === '(') { depth++; i++; continue; }
+    if (ch === ')') { depth--; i++; continue; }
+    // skip single-quoted strings
+    if (ch === "'") {
+      i++;
+      while (i < sql.length && sql[i] !== "'") {
+        if (sql[i] === '\\') i++;
+        i++;
+      }
+      i++; continue;
+    }
+    // skip double-quoted identifiers
+    if (ch === '"') {
+      i++;
+      while (i < sql.length && sql[i] !== '"') i++;
+      i++; continue;
+    }
+    // skip -- line comments
+    if (ch === '-' && sql[i+1] === '-') {
+      while (i < sql.length && sql[i] !== '\n') i++;
+      continue;
+    }
+    if (depth === 0) {
+      const slice = sql.slice(i);
+      const m = slice.match(re);
+      if (m && m.index === 0) {
+        hits.push({ pos: i, kw: m[0] });
+        i += m[0].length;
+        continue;
+      }
+    }
+    i++;
+  }
+  return hits;
+}
+
+/**
+ * Split the SQL into top-level clause segments.
+ * Returns an object keyed by clause id.
+ */
+/**
+ * Split the SQL into top-level clause segments.
+ * Returns an object keyed by clause id.
+ *
+ * Strategy: scan character by character tracking paren depth.
+ * Only depth-0 tokens count as clause boundaries.
+ * For CTEs, the boundary between WITH block and the main SELECT
+ * is the closing ) of the last CTE followed by the main SELECT —
+ * we detect this as: depth goes back to 0 AND next top-level token is SELECT.
+ */
+function splitTopLevel(sql) {
+  // Step 1: find positions of all top-level clause keywords
+  const CLAUSE_ORDER = [
+    { id: 'cte',     re: /\bWITH\b/i },
+    { id: 'select',  re: /\bSELECT\b/i },
+    { id: 'from',    re: /\bFROM\b/i },
+    { id: 'where',   re: /\bWHERE\b/i },
+    { id: 'groupby', re: /\bGROUP\s+BY\b/i },
+    { id: 'having',  re: /\bHAVING\b/i },
+    { id: 'orderby', re: /\bORDER\s+BY\b/i },
+    { id: 'limit',   re: /\bLIMIT\b/i },
+  ];
+
+  const all = [];
+  CLAUSE_ORDER.forEach(def => {
+    topLevelMatches(sql, def.re).forEach(hit => {
+      all.push({ id: def.id, pos: hit.pos });
+    });
+  });
+  all.sort((a, b) => a.pos - b.pos);
+
+  // Step 2: deduplicate — keep first occurrence of each id
+  // BUT: if WITH is present, the first SELECT is the main body SELECT,
+  // not a clause boundary for CTE. We need to find which SELECT comes
+  // AFTER the CTE closing paren.
+  const hasCTE = all.length > 0 && all[0].id === 'cte';
+
+  let unique = [];
+  if (hasCTE) {
+    // Find the position of the last ')' that closes all CTEs
+    // = the last ')' before the first top-level SELECT after WITH
+    const cteStart = all[0].pos;
+
+    // Walk from cteStart tracking depth to find where depth returns to 0
+    // after having entered at least one paren (the CTE body)
+    let depth = 0;
+    let enteredParen = false;
+    let cteEnd = -1; // position after last ')' closing the CTE block
+    let i = cteStart + 4; // skip 'WITH'
+    while (i < sql.length) {
+      const ch = sql[i];
+      if (ch === "'") {
+        i++;
+        while (i < sql.length && sql[i] !== "'") { if (sql[i] === '\\') i++; i++; }
+        i++; continue;
+      }
+      if (ch === '"') { i++; while (i < sql.length && sql[i] !== '"') i++; i++; continue; }
+      if (ch === '-' && sql[i+1] === '-') { while (i < sql.length && sql[i] !== '\n') i++; continue; }
+      if (ch === '(') { depth++; enteredParen = true; i++; continue; }
+      if (ch === ')') {
+        depth--;
+        if (enteredParen && depth === 0) {
+          cteEnd = i + 1; // position after the closing )
+          // check if next non-whitespace is SELECT or another CTE name (,)
+          let j = cteEnd;
+          while (j < sql.length && /\s/.test(sql[j])) j++;
+          if (sql[j] === ',') {
+            // another CTE follows — keep scanning
+          } else {
+            // this is the end of all CTEs
+            break;
+          }
+        }
+        i++; continue;
+      }
+      i++;
+    }
+
+    // The CTE block is from cteStart to cteEnd
+    // Everything after cteEnd is the main query
+    if (cteEnd > 0) {
+      const mainSql = sql.slice(cteEnd).trimStart();
+      const mainOffset = cteEnd + (sql.slice(cteEnd).length - mainSql.length);
+
+      // Re-parse only the main query part for SELECT/FROM/WHERE etc.
+      const mainClauses = [];
+      CLAUSE_ORDER.filter(d => d.id !== 'cte').forEach(def => {
+        topLevelMatches(mainSql, def.re).forEach(hit => {
+          mainClauses.push({ id: def.id, pos: mainOffset + hit.pos });
+        });
+      });
+      mainClauses.sort((a, b) => a.pos - b.pos);
+
+      // Deduplicate main clauses
+      const seenMain = new Set();
+      const uniqueMain = mainClauses.filter(h => {
+        if (seenMain.has(h.id)) return false;
+        seenMain.add(h.id); return true;
+      });
+
+      unique = [{ id: 'cte', pos: cteStart }, ...uniqueMain];
+    } else {
+      unique = [{ id: 'cte', pos: cteStart }];
+    }
+  } else {
+    const seen = new Set();
+    unique = all.filter(h => {
+      if (seen.has(h.id)) return false;
+      seen.add(h.id); return true;
+    });
+  }
+
+  // Step 3: slice text between boundaries
+  const result = {};
+  unique.forEach((clause, i) => {
+    const end = i + 1 < unique.length ? unique[i + 1].pos : sql.length;
+    result[clause.id] = sql.slice(clause.pos, end).trimEnd();
+  });
+  return result;
+}
+
+
+function getClause(sql, id) {
+  const parts = splitTopLevel(sql);
+  return parts[id] || null;
+}
+
+function extractWindowFunctions(sql) {
+  const winLineRe = /\bOVER\s*\(/i;
+  const winFnRe = /\b(ROW_NUMBER|RANK|DENSE_RANK|LAG|LEAD|NTILE|CUME_DIST|FIRST_VALUE|LAST_VALUE)\b/i;
+
+  // 1) First try the main SELECT block (most common case)
+  const sel = getClause(sql, 'select');
+  if (sel) {
+    const lines = sel.split('\n').filter(l => winLineRe.test(l) || winFnRe.test(l));
+    if (lines.length) return lines.join('\n').trim();
+  }
+
+  // 2) Fallback: window functions might be inside a FROM subquery
+  // (e.g. SELECT * FROM (SELECT ..., ROW_NUMBER() OVER (...) AS rn FROM ...) sub WHERE rn = 1)
+  const fromClause = getClause(sql, 'from');
+  if (fromClause) {
+    const lines = fromClause.split('\n').filter(l => winLineRe.test(l) || winFnRe.test(l));
+    if (lines.length) return lines.join('\n').trim();
+  }
+
+  // 3) Last resort: scan the whole query (handles edge cases/CTEs not otherwise covered)
+  if (winLineRe.test(sql) || winFnRe.test(sql)) {
+    const lines = sql.split('\n').filter(l => winLineRe.test(l) || winFnRe.test(l));
+    if (lines.length) return lines.join('\n').trim();
+  }
+
+  return null;
+}
+
+/* ════════════════════════════════════════════════
+   BUILD LEFT COLUMN
+   ════════════════════════════════════════════════ */
+let refOrderMode = 'writing'; // 'writing' | 'execution'
+
+function toggleRefOrder() {
+  refOrderMode = refOrderMode === 'writing' ? 'execution' : 'writing';
+  const btn = document.getElementById('order-toggle-btn');
+  btn.querySelector('span').textContent = refOrderMode === 'writing' ? 'Ordine scrittura' : 'Ordine esecuzione';
+  btn.classList.toggle('order-execution', refOrderMode === 'execution');
+  // rebuild with current query context
+  buildRef(document.getElementById('sql').value.trim());
+}
+
+function getOrderedRef() {
+  if (refOrderMode === 'writing') return REF;
+  // execution order: sections with a numeric execOrder first (sorted), then
+  // the rest (UNION, DML, DDL — execOrder === null) appended at the end
+  // in their original relative order.
+  const withOrder = REF.filter(s => s.execOrder !== null).sort((a, b) => a.execOrder - b.execOrder);
+  const withoutOrder = REF.filter(s => s.execOrder === null);
+  return [...withOrder, ...withoutOrder];
+}
+
+function buildRef(activeSql) {
+  const container = document.getElementById('ref-body');
+
+  // remember which sections are currently open
+  const openIds = new Set(
+    [...container.querySelectorAll('.ref-section.open')].map(el => el.id.replace('ref-', ''))
+  );
+
+  // per-section keyword detection (independent of EXEC_STEPS ids)
+  const SECTION_KEYWORDS = {
+    cte:     [/\bWITH\b/i],
+    select:  [/\bSELECT\b/i],
+    window:  [/\bOVER\s*\(/i, /\bROW_NUMBER\b/i, /\bRANK\b/i, /\bDENSE_RANK\b/i, /\bLAG\b/i, /\bLEAD\b/i, /\bPARTITION\s+BY\b/i],
+    from:    [/\bFROM\b/i],
+    join:    [/\bJOIN\b/i],
+    where:   [/\bWHERE\b/i],
+    groupby: [/\bGROUP\s+BY\b/i],
+    having:  [/\bHAVING\b/i],
+    orderby: [/\bORDER\s+BY\b/i],
+    limit:   [/\bLIMIT\b/i, /\bOFFSET\b/i],
+    union:   [/\bUNION\b/i],
+    dml:     [/\bINSERT\b/i, /\bUPDATE\b/i, /\bDELETE\b/i],
+    ddl:     [/\bCREATE\b/i, /\bALTER\b/i, /\bDROP\b/i],
+  };
+
+  container.innerHTML = '';
+
+  getOrderedRef().forEach(section => {
+    const kws = SECTION_KEYWORDS[section.id] || [];
+    const found = activeSql ? kws.some(kw => kw.test(activeSql)) : false;
+
+    const execLabel = section.execOrder !== null ? `exec #${section.execOrder + 1}` : null;
+
+    const div = document.createElement('div');
+    // restore open state if it was open before
+    const wasOpen = openIds.has(section.id);
+    div.className = 'ref-section' + (found ? ' active-exec' : '') + (wasOpen ? ' open' : '');
+    div.id = 'ref-' + section.id;
+
+    div.innerHTML = `
+      <div class="ref-head" onclick="toggleRef('${section.id}')">
+        <span class="ref-num">${section.execOrder !== null ? section.execOrder + 1 : '·'}</span>
+        <span class="ref-label">${section.label}</span>
+        ${execLabel ? `<span class="ref-exec-badge">${execLabel}</span>` : ''}
+        <svg class="ref-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="ref-body">
+        ${section.fullExample ? `
+        <div class="ref-try-row ref-try-row-top">
+          <button class="ref-try-btn" onclick="loadRefExample('${section.id}')">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Prova esempio completo
+          </button>
+        </div>` : ''}
+        <table class="ref-rows">
+          ${section.rows.map((r, ri) => `
+            <tr>
+              <td class="ref-op">
+                ${escHtml(r.op)}
+                ${!section.noTry ? `<button class="ref-row-btn" onclick="loadRefRowExample('${section.id}', ${ri})">
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                  prova
+                </button>` : ''}
+              </td>
+              <td class="ref-desc">
+                ${escHtml(r.desc)}
+                <span class="ref-ex">${escHtml(r.ex)}</span>
+              </td>
+            </tr>
+          `).join('')}
+        </table>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function toggleAllRef() {
+  const btn = document.getElementById('expand-all-btn');
+  const sections = document.querySelectorAll('.ref-section');
+  const allOpen = [...sections].every(s => s.classList.contains('open'));
+  sections.forEach(s => allOpen ? s.classList.remove('open') : s.classList.add('open'));
+  btn.classList.toggle('expanded', !allOpen);
+  btn.querySelector('span').textContent = allOpen ? 'Espandi tutti' : 'Chiudi tutti';
+}
+
+function toggleRef(id) {
+  const el = document.getElementById('ref-' + id);
+  if (el) el.classList.toggle('open');
+}
+
+function loadRefExample(sectionId) {
+  const section = REF.find(s => s.id === sectionId);
+  if (!section || !section.fullExample) return;
+  // ensure section is open so buildRef preserves it
+  const el = document.getElementById('ref-' + sectionId);
+  if (el) el.classList.add('open');
+  const sql = section.fullExample.replace(/\\n/g, '\n');
+  document.getElementById('sql').value = sql;
+  analyze();
+}
+
+function loadRefRowExample(sectionId, rowIndex) {
+  const section = REF.find(s => s.id === sectionId);
+  if (!section) return;
+  const row = section.rows[rowIndex];
+  if (!row || !row.ex) return;
+  // ensure section is open so buildRef preserves it
+  const el = document.getElementById('ref-' + sectionId);
+  if (el) el.classList.add('open');
+  const sql = row.ex.replace(/\\n/g, '\n');
+  document.getElementById('sql').value = sql;
+  analyze();
+}
+
+/* ════════════════════════════════════════════════
+   ANALYZE
+   ════════════════════════════════════════════════ */
+function analyze() {
+  const sql = document.getElementById('sql').value.trim();
+  const execList = document.getElementById('exec-list');
+
+  buildRef(sql);
+  if (sql) runQuery(sql);
+
+  if (!sql) {
+    execList.innerHTML = emptyHTML('Scrivi o incolla una query SQL e premi Analizza.');
+    return;
+  }
+
+  // Pre-extract all snippets: a step is present only if it extracts real content
+  const extracted = {};
+  EXEC_STEPS.forEach(s => {
+    const text = s.extractFn(sql);
+    extracted[s.id] = (text && text.trim()) ? text : null;
+  });
+
+  const found = EXEC_STEPS.filter(s => extracted[s.id] !== null);
+  if (!found.length) {
+    execList.innerHTML = emptyHTML('Nessuna clausola SQL riconosciuta.<br>Prova con una SELECT standard.');
+    return;
+  }
+
+  let html = '';
+  let seq = 0;
+
+  EXEC_STEPS.forEach((step, i) => {
+    const snippet = extracted[step.id];
+    if (!snippet) return;
+
+    seq++;
+
+    if (html !== '') {
+      html += `<div class="exec-sep"><div class="exec-sep-inner"><div class="exec-sep-line"></div><div class="exec-sep-arrow"></div></div></div>`;
+    }
+
+    html += `<div class="exec-block" id="exec-${step.id}">
+      <div class="exec-head">
+        <div class="exec-seq">${seq}</div>
+        <div class="exec-name">${step.label}</div>
+        <div class="exec-kw">${step.kw}</div>
+      </div>
+      <div class="exec-body">
+        <p class="exec-desc">${step.desc}</p>
+        ${snippet ? `<div class="exec-snippet">
+          <div class="exec-snippet-lbl">estratto dalla tua query</div>
+          <code>${escHtml(snippet)}</code>
+        </div>` : ''}
+        ${step.tip ? `<div class="exec-tip">${step.tip}</div>` : ''}
+      </div>
+    </div>`;
+  });
+
+  execList.innerHTML = html;
+}
+
+function emptyHTML(msg) {
+  return `<div class="empty-ex">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    ${msg}
+  </div>`;
+}
+
+function clearAll() {
+  document.getElementById('sql').value = '';
+  document.getElementById('exec-list').innerHTML = emptyHTML('Premi <strong>Analizza</strong> per vedere<br>l\'ordine reale di esecuzione.');
+  document.getElementById('result-wrap').innerHTML = `<div class="empty-ex">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    Premi <strong>Analizza</strong> per eseguire<br>la query sui dati di esempio.
+  </div>`;
+  document.getElementById('result-tag').textContent = 'in attesa';
+  document.getElementById('back-result-btn').style.display = 'none';
+  lastResultHTML = null;
+  lastResultTag  = null;
+  buildRef('');
+}
+
+/* ════════════════════════════════════════════════
+   EXAMPLES
+   ════════════════════════════════════════════════ */
+const EXAMPLES = {
+  basic:
+`SELECT citta, AVG(importo) AS media_ordine
+FROM clienti c
+INNER JOIN ordini o ON c.id = o.cliente_id
+WHERE o.stato = 'completato'
+GROUP BY citta
+HAVING AVG(importo) > 200
+ORDER BY media_ordine DESC
+LIMIT 5`,
+
+  join:
+`SELECT c.nome, COUNT(o.id) AS num_ordini, SUM(o.importo) AS totale
+FROM clienti c
+INNER JOIN ordini o ON c.id = o.cliente_id
+WHERE o.stato = 'completato'
+GROUP BY c.nome
+HAVING COUNT(o.id) >= 2
+ORDER BY totale DESC
+LIMIT 10`,
+
+  window:
+`SELECT
+  c.nome,
+  c.citta,
+  o.importo,
+  ROW_NUMBER() OVER (PARTITION BY c.citta ORDER BY o.importo DESC) AS rank_in_citta,
+  AVG(o.importo) OVER (PARTITION BY c.citta) AS media_citta
+FROM clienti c
+INNER JOIN ordini o ON c.id = o.cliente_id
+WHERE o.stato = 'completato'
+ORDER BY c.citta, rank_in_citta`,
+
+  master:
+`WITH clienti_attivi AS (
+  SELECT id, nome, cognome, email, citta, categoria
+  FROM clienti
+  WHERE attivo = 1
+    AND citta IN ('Roma', 'Milano', 'Napoli')
+),
+ordini_validi AS (
+  SELECT
+    o.cliente_id,
+    o.importo,
+    o.data_ordine,
+    ROW_NUMBER() OVER (
+      PARTITION BY o.cliente_id
+      ORDER BY o.importo DESC
+    ) AS rn_importo
+  FROM ordini o
+  WHERE o.stato = 'completato'
+    AND o.importo > 50
+)
+SELECT
+  c.nome,
+  c.citta,
+  c.categoria,
+  COALESCE(c.email, 'N/D') AS contatto,
+  o.rn_importo,
+  COUNT(*) AS num_ordini,
+  SUM(o.importo) AS fatturato_totale,
+  AVG(o.importo) AS importo_medio,
+  CASE
+    WHEN SUM(o.importo) > 1000 THEN 'Alto'
+    WHEN SUM(o.importo) > 500  THEN 'Medio'
+    ELSE 'Basso'
+  END AS fascia
+FROM clienti_attivi c
+INNER JOIN ordini_validi o ON c.id = o.cliente_id
+WHERE c.email IS NOT NULL
+GROUP BY
+  c.id, c.nome, c.citta, c.categoria, c.email, o.rn_importo
+HAVING COUNT(*) >= 1
+ORDER BY fatturato_totale DESC
+LIMIT 20`
+};
+
+const NAMED_EXAMPLES = {
+  duplicati:
+`-- Trovare duplicati 1: GROUP BY + HAVING (mostra il conteggio per gruppo)
+SELECT citta, categoria, COUNT(*) AS occorrenze
+FROM clienti
+WHERE attivo = 1
+GROUP BY citta, categoria
+HAVING COUNT(*) > 1
+ORDER BY occorrenze DESC`,
+
+  duplicati2:
+`-- Trovare duplicati 2: EXISTS + SELECT 1 (mostra le righe coinvolte, non il conteggio)
+-- SELECT 1 dentro EXISTS è una convenzione: non recupera dati,
+-- serve solo a verificare SE esiste almeno una riga corrispondente.
+SELECT c1.nome, c1.citta, c1.categoria
+FROM clienti c1
+WHERE c1.attivo = 1
+  AND EXISTS (
+    SELECT 1
+    FROM clienti c2
+    WHERE c2.citta = c1.citta
+      AND c2.categoria = c1.categoria
+      AND c2.id != c1.id
+  )
+ORDER BY c1.citta, c1.categoria, c1.nome`,
+
+  topN:
+`-- Top 2 ordini per importo per ogni città (con ROW_NUMBER)
+WITH ranked AS (
+  SELECT
+    c.nome,
+    c.citta,
+    o.importo,
+    o.data_ordine,
+    ROW_NUMBER() OVER (
+      PARTITION BY c.citta
+      ORDER BY o.importo DESC
+    ) AS rn
+  FROM clienti c
+  INNER JOIN ordini o ON c.id = o.cliente_id
+  WHERE o.stato = 'completato'
+)
+SELECT nome, citta, importo, data_ordine, rn
+FROM ranked
+WHERE rn <= 2
+ORDER BY citta, rn`,
+
+  running_total:
+`-- Totale cumulativo degli ordini completati nel tempo
+SELECT
+  data_ordine,
+  importo,
+  SUM(importo) OVER (
+    ORDER BY data_ordine
+  ) AS totale_cumulativo,
+  COUNT(*) OVER (
+    ORDER BY data_ordine
+  ) AS num_ordini_cumulativi
+FROM ordini
+WHERE stato = 'completato'
+ORDER BY data_ordine`,
+
+  missing:
+`-- Clienti che non hanno ordini completati (solo annullati o nessun ordine)
+SELECT c.nome, c.citta, c.categoria,
+  COALESCE(SUM(o.importo), 0) AS spesa_totale
+FROM clienti c
+LEFT JOIN ordini o ON c.id = o.cliente_id
+  AND o.stato = 'completato'
+GROUP BY c.id, c.nome, c.citta, c.categoria
+HAVING spesa_totale = 0
+ORDER BY c.nome`,
+
+  yoy:
+`-- Confronto fatturato 2024 per categoria
+SELECT
+  categoria,
+  SUM(CASE WHEN SUBSTR(data_ordine,1,4) = '2024'
+    THEN importo ELSE 0 END) AS fatturato_2024,
+  COUNT(CASE WHEN SUBSTR(data_ordine,1,4) = '2024'
+    THEN 1 END) AS ordini_2024
+FROM ordini
+WHERE stato = 'completato'
+GROUP BY categoria
+ORDER BY fatturato_2024 DESC`,
+
+  percentuale:
+`-- Percentuale di fatturato per categoria sul totale
+SELECT
+  categoria,
+  SUM(importo) AS fatturato,
+  ROUND(
+    SUM(importo) * 100.0 /
+    SUM(SUM(importo)) OVER (),
+    1
+  ) AS percentuale
+FROM ordini
+WHERE stato = 'completato'
+GROUP BY categoria
+ORDER BY fatturato DESC`,
+
+  pivot:
+`-- Pivot manuale: ordini per stato e categoria con CASE WHEN
+SELECT
+  categoria,
+  SUM(CASE WHEN stato = 'completato' THEN importo ELSE 0 END) AS completato,
+  SUM(CASE WHEN stato = 'annullato'  THEN importo ELSE 0 END) AS annullato,
+  COUNT(*) AS totale_ordini
+FROM ordini
+GROUP BY categoria
+ORDER BY completato DESC`,
+
+  rank_filter:
+`-- Filtrare per rank: top 5 clienti per fatturato (con DENSE_RANK)
+WITH fatturato_clienti AS (
+  SELECT
+    c.nome,
+    c.citta,
+    SUM(o.importo) AS fatturato_totale
+  FROM clienti c
+  INNER JOIN ordini o ON c.id = o.cliente_id
+  WHERE o.stato = 'completato'
+  GROUP BY c.id, c.nome, c.citta
+),
+ranked AS (
+  SELECT
+    nome, citta, fatturato_totale,
+    DENSE_RANK() OVER (ORDER BY fatturato_totale DESC) AS posizione
+  FROM fatturato_clienti
+)
+SELECT nome, citta, fatturato_totale, posizione
+FROM ranked
+WHERE posizione <= 5
+ORDER BY posizione`,
+
+  master:
+`WITH clienti_attivi AS (
+  SELECT id, nome, cognome, email, citta, categoria
+  FROM clienti
+  WHERE attivo = 1
+    AND citta IN ('Roma', 'Milano', 'Napoli')
+),
+ordini_validi AS (
+  SELECT
+    o.cliente_id,
+    o.importo,
+    o.data_ordine,
+    ROW_NUMBER() OVER (
+      PARTITION BY o.cliente_id
+      ORDER BY o.importo DESC
+    ) AS rn_importo
+  FROM ordini o
+  WHERE o.stato = 'completato'
+    AND o.importo > 50
+)
+SELECT
+  c.nome,
+  c.citta,
+  c.categoria,
+  COALESCE(c.email, 'N/D') AS contatto,
+  o.rn_importo,
+  COUNT(*) AS num_ordini,
+  SUM(o.importo) AS fatturato_totale,
+  AVG(o.importo) AS importo_medio,
+  CASE
+    WHEN SUM(o.importo) > 1000 THEN 'Alto'
+    WHEN SUM(o.importo) > 500  THEN 'Medio'
+    ELSE 'Basso'
+  END AS fascia
+FROM clienti_attivi c
+INNER JOIN ordini_validi o ON c.id = o.cliente_id
+WHERE c.email IS NOT NULL
+GROUP BY
+  c.id, c.nome, c.citta, c.categoria, c.email, o.rn_importo
+HAVING COUNT(*) >= 1
+ORDER BY fatturato_totale DESC
+LIMIT 20`
+};
+
+function toggleExamplesMenu(e) {
+  e.stopPropagation();
+  document.getElementById('examples-dropdown').classList.toggle('open');
+}
+
+function loadNamedExample(key) {
+  document.getElementById('examples-dropdown').classList.remove('open');
+  const sql = NAMED_EXAMPLES[key];
+  if (!sql) return;
+  document.getElementById('sql').value = sql;
+  analyze();
+}
+
+// close dropdown on outside click
+document.addEventListener('click', () => {
+  document.getElementById('examples-dropdown').classList.remove('open');
+});
+
+
+
+
+/* ════════════════════════════════════════════════
+   SQL.JS — SQLite in the browser
+   ════════════════════════════════════════════════ */
+let DB = null;
+
+const SEED_SQL = `
+CREATE TABLE clienti (
+  id INTEGER PRIMARY KEY,
+  nome TEXT, cognome TEXT, email TEXT,
+  citta TEXT, eta INTEGER, telefono TEXT,
+  data_iscrizione TEXT, attivo INTEGER, categoria TEXT
+);
+INSERT INTO clienti VALUES
+(1,'Mario','Rossi','mario.rossi@email.it','Roma',34,'3331234567','2022-03-15',1,'Gold'),
+(2,'Laura','Bianchi','laura.b@email.it','Milano',28,'3342345678','2021-07-22',1,'Standard'),
+(3,'Giuseppe','Verdi','g.verdi@email.it','Napoli',45,'3353456789','2020-01-10',1,'Platinum'),
+(4,'Anna','Ferrari','anna.f@email.it','Roma',31,'3364567890','2022-11-05',1,'Gold'),
+(5,'Luca','Esposito','luca.e@email.it','Torino',52,'3375678901','2019-06-18',0,'Standard'),
+(6,'Chiara','Romano','chiara.r@email.it','Milano',26,NULL,'2023-02-28',1,'Standard'),
+(7,'Marco','Conti','marco.c@email.it','Firenze',39,NULL,'2021-09-14',1,'Gold'),
+(8,'Giulia','Ricci','giulia.r@email.it','Roma',22,'3396789012','2023-05-01',1,'Standard'),
+(9,'Federico','Marino','federico.m@email.it','Bologna',47,'3307890123','2020-08-30',1,'Platinum'),
+(10,'Valentina','Greco','valentina.g@email.it','Napoli',33,'3318901234','2022-04-17',1,'Gold'),
+(11,'Stefano','Bruno','stefano.b@email.it','Roma',41,'3329012345','2021-12-03',0,'Standard'),
+(12,'Alessia','Gallo','alessia.g@email.it','Milano',29,'3330123456','2023-01-19',1,'Gold'),
+(13,'Davide','Costa','davide.c@email.it','Torino',36,NULL,'2020-05-07',1,'Standard'),
+(14,'Sara','Fontana','sara.f@email.it','Firenze',24,'3341234568','2023-08-22',1,'Standard'),
+(15,'Roberto','Barbieri','roberto.b@email.it','Roma',58,'3352345679','2018-11-11',1,'Platinum');
+
+CREATE TABLE ordini (
+  id INTEGER PRIMARY KEY,
+  cliente_id INTEGER, prodotto_id INTEGER,
+  importo REAL, data_ordine TEXT, stato TEXT, categoria TEXT
+);
+INSERT INTO ordini VALUES
+(1,1,3,250.00,'2024-01-05','completato','elettronica'),
+(2,1,7,89.50,'2024-02-14','completato','libri'),
+(3,2,1,1200.00,'2024-01-20','completato','elettronica'),
+(4,3,5,45.00,'2024-03-02','completato','abbigliamento'),
+(5,3,2,780.00,'2024-03-15','completato','elettronica'),
+(6,4,8,320.00,'2024-01-28','annullato','casa'),
+(7,4,3,250.00,'2024-02-09','completato','elettronica'),
+(8,5,6,55.00,'2024-04-01','completato','libri'),
+(9,6,1,1200.00,'2024-02-22','completato','elettronica'),
+(10,7,4,180.00,'2024-03-10','completato','abbigliamento'),
+(11,7,9,95.00,'2024-04-05','completato','sport'),
+(12,8,2,780.00,'2024-01-15','completato','elettronica'),
+(13,9,5,45.00,'2024-02-28','completato','abbigliamento'),
+(14,9,10,420.00,'2024-03-20','completato','casa'),
+(15,10,1,1200.00,'2024-04-12','completato','elettronica'),
+(16,10,6,55.00,'2024-04-18','completato','libri'),
+(17,11,3,250.00,'2024-01-30','annullato','elettronica'),
+(18,12,7,89.50,'2024-02-05','completato','libri'),
+(19,12,4,180.00,'2024-03-25','completato','abbigliamento'),
+(20,13,8,320.00,'2024-04-08','completato','casa'),
+(21,14,2,780.00,'2024-01-10','completato','elettronica'),
+(22,15,5,45.00,'2024-02-15','completato','abbigliamento'),
+(23,15,9,95.00,'2024-03-05','completato','sport'),
+(24,1,10,420.00,'2024-04-22','completato','casa'),
+(25,3,1,1200.00,'2024-05-01','completato','elettronica');
+
+CREATE TABLE prodotti (
+  id INTEGER PRIMARY KEY,
+  nome TEXT, categoria TEXT, prezzo REAL, stock INTEGER
+);
+INSERT INTO prodotti VALUES
+(1,'Smartphone Pro','elettronica',1200.00,45),
+(2,'Laptop Ultra','elettronica',780.00,23),
+(3,'Cuffie Wireless','elettronica',250.00,102),
+(4,'Giacca Invernale','abbigliamento',180.00,67),
+(5,'T-shirt Basic','abbigliamento',45.00,234),
+(6,'Manuale SQL','libri',55.00,89),
+(7,'Romanzo Best-seller','libri',89.50,156),
+(8,'Lampada Design','casa',320.00,34),
+(9,'Scarpe Running','sport',95.00,78),
+(10,'Vaso Ceramica','casa',420.00,19);
+
+CREATE TABLE categorie (
+  id INTEGER PRIMARY KEY, nome TEXT, descrizione TEXT
+);
+INSERT INTO categorie VALUES
+(1,'elettronica','Dispositivi e accessori tecnologici'),
+(2,'abbigliamento','Capi di abbigliamento e accessori moda'),
+(3,'libri','Libri, ebook e materiale didattico'),
+(4,'casa','Arredamento e articoli per la casa'),
+(5,'sport','Abbigliamento e attrezzatura sportiva');
+`;
+
+async function initDB() {
+  try {
+    const SQL = await initSqlJs({
+      locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${file}`
+    });
+    DB = new SQL.Database();
+    DB.run(SEED_SQL);
+    document.getElementById('result-tag').textContent = 'pronto';
+  } catch(e) {
+    console.warn('sql.js non caricato:', e);
+    document.getElementById('result-tag').textContent = 'non disponibile';
+  }
+}
+
+function runQuery(sql) {
+  const wrap = document.getElementById('result-wrap');
+  const tag  = document.getElementById('result-tag');
+
+  if (!DB) {
+    wrap.innerHTML = '<div class="result-error"><strong>Database non pronto</strong>Attendi il caricamento di sql.js o verifica la connessione.</div>';
+    return;
+  }
+
+  // DDL / DML non eseguiamo — mostra avviso
+  if (/^\s*(INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|TRUNCATE)/i.test(sql)) {
+    wrap.innerHTML = '<div class="result-ddl">⚠ Le istruzioni DDL/DML (INSERT, UPDATE, DELETE, CREATE…) non vengono eseguite sul database di esempio per preservare i dati. Usa una SELECT per vedere i risultati.</div>';
+    tag.textContent = 'DDL/DML';
+    return;
+  }
+
+  // Extract CTE names if present
+  const cteNames = [];
+  if (/\bWITH\b/i.test(sql)) {
+    const withIdx = sql.search(/\bWITH\b/i);
+    let depth = 0, scanning = false, endPos = sql.length;
+    for (let i = withIdx; i < sql.length; i++) {
+      if (sql[i] === '(') { depth++; scanning = true; }
+      else if (sql[i] === ')') { depth--; }
+      if (scanning && depth === 0) { endPos = i + 1; break; }
+    }
+    const cteBlock = sql.slice(withIdx, endPos);
+    const nameRe = /(\w+)\s+AS\s*\(/gi;
+    let m;
+    while ((m = nameRe.exec(cteBlock)) !== null) cteNames.push(m[1]);
+  }
+
+
+  const t0 = performance.now();
+  try {
+    const results = DB.exec(sql);
+    const ms = (performance.now() - t0).toFixed(1);
+
+    if (!results.length) {
+      wrap.innerHTML = '<div class="result-ddl">✓ Query eseguita. Nessuna riga restituita.</div>';
+      tag.textContent = '0 righe';
+      return;
+    }
+
+    const { columns, values } = results[0];
+    const rowCount = values.length;
+    tag.textContent = rowCount + (rowCount === 1 ? ' riga' : ' righe');
+
+    // detect numeric columns
+    const numCols = new Set();
+    if (values.length) {
+      columns.forEach((_, ci) => {
+        if (values.every(r => r[ci] === null || typeof r[ci] === 'number')) numCols.add(ci);
+      });
+    }
+
+
+    // CTE flow banner
+    let cteBanner = '';
+    if (cteNames.length) {
+      const steps = cteNames.map(n => `<span class="result-cte-name">${escHtml(n)}</span>`).join('<span class="result-cte-arrow">→</span>');
+      cteBanner = `<div class="result-cte-banner">
+        <span class="result-cte-label">CTE create</span>
+        ${steps}
+        <span class="result-cte-arrow">→</span>
+        <span class="result-cte-name result-cte-final">risultato finale</span>
+      </div>`;
+    }
+
+    let html = cteBanner + `<div class="result-info">
+      <span class="result-count">${rowCount} ${rowCount === 1 ? 'riga' : 'righe'}</span>
+      <span class="result-time">${ms} ms</span>
+    </div>
+    <div class="result-table-wrap">
+    <table class="result-table">
+      <thead><tr>${columns.map(c => `<th>${escHtml(c)}</th>`).join('')}</tr></thead>
+      <tbody>`;
+
+    values.forEach(row => {
+      html += '<tr>' + row.map((v, ci) => {
+        if (v === null) return '<td class="null-val">NULL</td>';
+        if (numCols.has(ci)) return `<td class="num-val">${v}</td>`;
+        return `<td>${escHtml(String(v))}</td>`;
+      }).join('') + '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    lastResultHTML = html;
+    lastResultTag  = tag.textContent;
+    wrap.innerHTML = html;
+
+  } catch(e) {
+    const ms = (performance.now() - t0).toFixed(1);
+    tag.textContent = 'errore';
+    wrap.innerHTML = `<div class="result-error"><strong>Errore SQL</strong>${escHtml(e.message)}</div>`;
+  }
+}
+
+/* show schema helper — called on result col when DB ready */
+let lastResultHTML = null;
+let lastResultTag  = null;
+
+function showLastResult() {
+  if (!lastResultHTML) return;
+  document.getElementById('result-wrap').innerHTML = lastResultHTML;
+  document.getElementById('result-tag').textContent = lastResultTag || '';
+  document.getElementById('back-result-btn').style.display = 'none';
+}
+
+function showSchema() {
+  const wrap = document.getElementById('result-wrap');
+  if (!DB) return;
+  const tables = ['clienti','ordini','prodotti','categorie'];
+  let html = '<p style="font-size:11px;color:var(--text3);margin-bottom:12px">Tabelle disponibili — clicca per vedere le prime righe:</p>';
+  tables.forEach(t => {
+    try {
+      const info    = DB.exec(`PRAGMA table_info(${t})`);
+      const count   = DB.exec(`SELECT COUNT(*) FROM ${t}`);
+      const preview = DB.exec(`SELECT * FROM ${t} LIMIT 3`);
+      if (!info.length) return;
+
+      const numRows = count[0].values[0][0];
+      const cols    = info[0].values.map(c => c[1]);
+
+      html += `<div class="schema-section">
+        <div class="schema-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>${t}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--accent-text);background:var(--accent-dim);padding:1px 7px;border-radius:3px;border:1px solid rgba(79,142,247,0.25)">${numRows} righe</span>
+        </div>
+        <table class="schema-table">
+          <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
+          <tbody>`;
+
+      if (preview.length) {
+        preview[0].values.forEach(row => {
+          html += '<tr>' + row.map(v =>
+            `<td>${v === null ? '<span style="color:var(--text3);font-style:italic">NULL</span>' : String(v)}</td>`
+          ).join('') + '</tr>';
+        });
+      }
+      html += `<tr><td colspan="${cols.length}" style="color:var(--text3);font-style:italic;text-align:center">… altre ${numRows - Math.min(3, numRows)} righe</td></tr>`;
+      html += '</tbody></table></div>';
+    } catch(e) {}
+  });
+  wrap.innerHTML = html;
+  document.getElementById('result-tag').textContent = 'schema';
+  document.getElementById('back-result-btn').style.display = lastResultHTML ? 'inline-flex' : 'none';
+}
+
+initDB().then(() => { setTimeout(showSchema, 100); });
+
+
+// init
+buildRef('');
+</script>
+</body>
+</html>
